@@ -4,7 +4,9 @@ RUN mkdir -p /usr/app
 WORKDIR /usr/app
 
 # Install dependencies based on the preferred package manager
-COPY ./ ./
+COPY . .
+COPY ./public .
+COPY ./src .
 
 RUN npm install
 RUN npm run build
