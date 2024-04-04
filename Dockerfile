@@ -1,6 +1,7 @@
 FROM node:18-alpine
 
-WORKDIR /root
+RUN mkdir -p /usr/app
+WORKDIR /usr/app
 
 # Install dependencies based on the preferred package manager
 COPY ./ ./
