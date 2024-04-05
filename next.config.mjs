@@ -1,5 +1,4 @@
-// next.config.mjs
-const nextConfig = {
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
 
 export default nextConfig;
