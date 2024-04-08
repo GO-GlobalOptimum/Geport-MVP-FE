@@ -114,7 +114,7 @@ export default function Geport(){
                  onClick={() => {
                      if (paging > 4) {
                          router.refresh();
-                         router.push('/geport/link'); // 다음 페이지로 이동하자
+                         router.push('/user-info'); // 다음 페이지로 이동하자
                      }
                      else{
                          setPaging(prev => prev + 1)
