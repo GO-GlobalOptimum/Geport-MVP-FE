@@ -65,16 +65,19 @@ export default function Geport(){
             weight: "100%"
         }}>
             <div style={{width: "100%", height: "10%", marginTop: "5%"}}>
-                <div style={{width: "15%", height: "100%", marginLeft: "3%"}}>
+                <div style={{width: "15%", height: "100%"}}>
                     <button style={{fontSize: "1.8em"}} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
                             router.push('/geport/link');
+                        } else {
+                            setPaging(prev => prev - 1)
                         }
-                        else {
-                            setPaging(prev => prev -1)
-                        }
-                    }}> ◀︎
+                    }}>
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M27 30L21 24L27 18" stroke="white" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round"/>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -98,11 +101,11 @@ export default function Geport(){
             }
 
             <div style={{
-                width: "96%",
-                height: "9%",
+                width: "90%",
+                height: "50px",
                 backgroundColor: isVaild ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
-                margin: "2%",
+                margin: "5%",
                 marginBottom: "6%",
                 color: isVaild ? "black" : "#C6C6C6",
                 display: "flex",
@@ -131,8 +134,9 @@ export function Information() {
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "15%", fontSize: "1.6em", marginBottom: "5%", marginLeft: "5%"}}>
-                다음 질문에 가능한 상쇄하게 <br/>
+            <div style={{width: "100%", height: "15%", fontSize: "1.6em",
+                marginBottom: "5%", paddingLeft: "5%", paddingRight: "5%"}}>
+                다음 질문에 가능한 상쇄하게
                 답변해주세요
             </div>
             <div style={{
@@ -140,9 +144,11 @@ export function Information() {
                 height: "10%",
                 fontSize: "1em",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                marginBottom: "2%",
+                paddingLeft: "5%",
+                paddingRight: "5%"
             }}>
-                다음 질문의 답변과 첨부해주신 블로그의 내용을 바탕으로 <br/>
+                다음 질문의 답변과 첨부해주신 블로그의 내용을 바탕으로
                 Geport를 작성합니다.
             </div>
             <div style={{
@@ -151,9 +157,10 @@ export function Information() {
                 fontSize: "1em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                paddingLeft: "5%",
+                paddingRight: "5%"
             }}>
-                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다. <br/>
+                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다.
                 자유롭게 작성해주세요.
             </div>
         </div>
@@ -167,7 +174,8 @@ export function First({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em", marginBottom: "2%" , marginLeft: "5%"}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 당신은 어떤 사람이 되고 싶나요?
             </div>
             <div style={{
@@ -176,13 +184,13 @@ export function First({answer, page, update}){
                 fontSize: "1em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                paddingLeft: "5%",
+                paddingRight: "5%",
             }}>
-                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다. <br/>
+                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다.
                 자유롭게 작성해주세요.
             </div>
             <div style={{
-                display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 width: "90%", marginLeft: "5%", height: "40%",
@@ -213,7 +221,8 @@ export function Second({answer, page, update}) {
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em", marginBottom: "2%" , marginLeft: "5%"}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 당신의 좌우명은 무엇인가요?
             </div>
             <div style={{
@@ -222,9 +231,10 @@ export function Second({answer, page, update}) {
                 fontSize: "1em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                paddingLeft: "5%",
+                paddingRight: "5%"
             }}>
-                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다. <br/>
+                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다.
                 자유롭게 작성해주세요.
             </div>
             <div style={{
@@ -261,7 +271,8 @@ export function Third({answer, page, update}) {
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em", marginBottom: "2%" , marginLeft: "5%"}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 당신이 좋아하는 것은 무엇인가요?
             </div>
             <div style={{
@@ -270,9 +281,10 @@ export function Third({answer, page, update}) {
                 fontSize: "1em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                paddingLeft: "5%",
+                paddingRight: "5%"
             }}>
-                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다. <br/>
+                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다.
                 자유롭게 작성해주세요.
             </div>
             <div style={{
@@ -306,7 +318,8 @@ export function Fourth({answer, page, update}) {
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em", marginBottom: "2%" , marginLeft: "5%"}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 당신이 잘하는 건 무엇인가요?
             </div>
             <div style={{
@@ -315,9 +328,10 @@ export function Fourth({answer, page, update}) {
                 fontSize: "1em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                paddingLeft: "5%",
+                paddingRight: "5%"
             }}>
-                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다. <br/>
+                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다.
                 자유롭게 작성해주세요.
             </div>
             <div style={{
@@ -352,8 +366,9 @@ export function Fifth({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "15%", fontSize: "1.6em", marginBottom: "2%" , marginLeft: "5%"}}>
-                인생의 변곡점은 무엇인가요? <br/>
+            <div style={{width: "100%", height: "15%", fontSize: "1.5em",
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
+                인생의 변곡점은 무엇인가요?
                 힘들었지만 극복했던 경험을 알려주세요
             </div>
             <div style={{
@@ -362,9 +377,10 @@ export function Fifth({answer, page, update}){
                 fontSize: "1em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                marginLeft: "5%"
+                paddingLeft: "5%",
+                paddingRight: "5%"
             }}>
-                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다. <br/>
+                답변은 반드시 블로그에 작성된 내용과 일치할 필요는 없습니다.
                 자유롭게 작성해주세요.
             </div>
             <div style={{
