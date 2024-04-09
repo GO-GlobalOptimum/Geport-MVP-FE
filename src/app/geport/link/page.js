@@ -7,7 +7,7 @@ const Question = (props) => {
         <div style={{borderStyle: "round",
             marginLeft: "5%", marginRight: "5%", marginBottom: "2%", width: "90%", height : "50px", borderRadius: "10px", display: "flex"}}>
             <input
-                style={{backgroundColor: "#363636", width: "95%", height: "100%", borderRadius: "10px", paddingLeft: "1%"}}
+                style={{backgroundColor: "#363636", width: "95%", height: "100%", borderRadius: "10px", paddingLeft: "3%"}}
                 placeholder = "이곳에 블로그 링크를 첨부해주세요" value={props.question.content}
                 onChange={(e) => props.updateQuestionContent(props.question.id, e.target.value)}/>
             <button style={{width:"5%", height:"100%"}}
