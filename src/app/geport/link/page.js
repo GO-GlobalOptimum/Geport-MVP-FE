@@ -64,7 +64,7 @@ export default function GeportLink(){
             <div style={{width: "100%", height: "7%", marginTop: "5%"}}>
                 <div style={{width: "15%", height: "100%"}}>
                     <button style={{fontSize: "1.8em"}} onClick={() => {
-                        router.push('/');
+                        router.push('/onboarding');
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M27 30L21 24L27 18" stroke="white" stroke-width="2" stroke-linecap="round"
