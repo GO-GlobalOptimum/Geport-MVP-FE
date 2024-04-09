@@ -5,7 +5,7 @@ export default function view() {
     return (
         <div style={{backgroundColor: "#181818", height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
             <div style = {{marginTop : '30px'}}>
-                <Image src={"image/logo.svg"} width={120} height={120}/>
+                <Image src={"/image/logo.svg"} width={120} height={120}/>
             </div>
             <h2 style={{color:'white', fontSize: '24px', padding : '40px'}}>히든코드를 받으셨나요?</h2>
             <div style={{marginTop: '30px', textAlign: 'center'}}>
