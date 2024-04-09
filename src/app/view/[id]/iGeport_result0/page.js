@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
-
-export default function UserviewPage() {
+export default function iGeport_result0() {
     const router = useRouter();
     const params = useParams();
     const id = params.id;
@@ -27,25 +26,25 @@ export default function UserviewPage() {
             {/* 조건부 렌더링을 사용하여 디자인을 변경 */}
             {showAlternateDesign ? (
                 <div>
-                <div style={{
-                    backgroundColor: "#1AE57C",
-                    height: '50vh',
-                    width:'55vh',
-                    color: 'white',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-                }}>
-                    <div>
-                    <h2 style={{color:'black', fontSize: '24px'}}>{intro_sentence}</h2>
-                    <h2 style={{color:'black', fontSize: '24px'}}>{username}님의 iGeport</h2>
-                        <span style={{color: "gray"}}>{username}님의 블로그와 답변을 바탕으로</span>
-                        <br />
-                        <span style={{color: "gray"}}>퍼스널브랜딩에 필요한 심리 보고서를 준비했어요.</span>
+                    <div style={{
+                        backgroundColor: "#1AE57C",
+                        height: '50vh',
+                        width:'50vh',
+                        color: 'white',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+                    }}>
+                        <div>
+                            <h2 style={{color:'black', fontSize: '24px'}}>{intro_sentence}</h2>
+                            <h2 style={{color:'black', fontSize: '24px'}}>{username}님의 iGeport</h2>
+                            <span style={{color: "gray"}}>{username}님의 블로그와 답변을 바탕으로</span>
+                            <br />
+                            <span style={{color: "gray"}}>퍼스널브랜딩에 필요한 심리 보고서를 준비했어요.</span>
+                        </div>
                     </div>
-                </div>
                     <div style={ {display : 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                         <Link href={`/view/${id}/iGeport_result1`} as={`/view/${id}/iGeport_result1`}>
                             <button style={{color: '#0c0c0c', backgroundColor: '#1AE57C', padding: '10px 30px', borderRadius: '15px', width: '400px', fontWeight: 'bold', marginTop: '150px'}}>다음으로</button>
@@ -67,4 +66,4 @@ export default function UserviewPage() {
             )}
         </div>
     );
-    }
+}
