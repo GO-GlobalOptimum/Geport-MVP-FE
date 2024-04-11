@@ -62,16 +62,18 @@ export default function iGeportLink(){
                 width: "100%",
                 height: "8%",
                 fontSize: "1.6em",
-                padding:"20px"
+                padding:"20px",
+                paddingBottom:"20px"
             }}> <p>나의 블로그 게시물 링크<br/> 4개를 첨부해주세요.</p></div>
             <div style={{
-                width : "100%",
+                width : "90%",
                 height:"17%",
                 padding:"20px",
                 fontSize: "1em",
                 color: "#C6C6C6",
+                paddingBottom:"20px"
                 //  overflow :"flex"
-            }}>게시물 링크를 4개 첨부해주세요. <br/> 첨부한 게시물을 바탕으로 iGeport를 만들어드립니다.
+            }}> <br/>게시물 링크를 4개 첨부해주세요. <br/>첨부한 게시물을 바탕으로 iGeport를 만들어드립니다.
             </div>
             <div style={{width: "100%", height: "70%", overflowY: "auto"}}>
                 {
