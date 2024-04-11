@@ -1,22 +1,29 @@
 "use client"
 import {useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
+import { useEffect, useState } from "react";
 
-export default function iGeport(){
+export default function iGeport() {
     const router = useRouter();
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);
-    const [answer, setAnswer] = useState([
-        {id : 1, content: ""}, {id : 2, content: ""}, {id : 3, content: ""}, {id : 4, content: ""}, {id : 5, content: ""}
-    ]);
+    const [answer, setAnswer] = useState([]);
     const [isVaild, setIsVaild] = useState(false);
+    useEffect(() => {
+        // 초기 로드 시 로컬 스토리지에서 데이터 불러오기
+        const loadedAnswers = [];
+        for (let i = 1; i <= 5; i++) {
+            const content = localStorage.getItem(`iGeport-answer-${i}`) || "";
+            loadedAnswers.push({ id: i, content });
+        }
+        setAnswer(loadedAnswers);
+    }, []);
 
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 5;
         setIsInfo(!isPage);
         const pageContent = answer.find(ans => ans.id === paging)?.content || "";
-        const isContent = pageContent !== ""
+        const isContent = pageContent !== "";
         setIsVaild(isContent || !isPage);
     }, [paging, answer]);
 
@@ -25,37 +32,27 @@ export default function iGeport(){
             ans.id === id ? { ...ans, content: newContent } : ans
         );
         setAnswer(updatedAnswers);
+        localStorage.setItem(`iGeport-answer-${id}`, newContent); // 로컬 스토리지에 저장
     };
 
     const pageComponent = (page) => {
-        switch (page){
+        switch (page) {
             case 1:
-                return (
-                    <First answer={answer} page={page} update={update}/>
-                )
+                return <First answer={answer} page={page} update={update} />;
             case 2:
-                return (
-                    <Second answer={answer} page={page} update={update}/>
-                )
+                return <Second answer={answer} page={page} update={update} />;
             case 3:
-                return (
-                    <Third answer={answer} page={page} update={update}/>
-                )
+                return <Third answer={answer} page={page} update={update} />;
             case 4:
-                return (
-                    <Fourth answer={answer} page={page} update={update}/>
-                )
+                return <Fourth answer={answer} page={page} update={update} />;
             case 5:
-                return (
-                    <Fifth answer={answer} page={page} update={update}/>
-                )
+                return <Fifth answer={answer} page={page} update={update} />;
             default:
-                return(
-                    <Information/>
-                )
+                return <Information />;
         }
-    }
-    return(
+    };
+
+    return (
         <div style={{
             backgroundColor: "#181818",
             height: '100vh',
@@ -64,9 +61,9 @@ export default function iGeport(){
             flexDirection: 'column',
             weight: "100%"
         }}>
-            <div style={{width: "100%", height: "10%", marginTop: "5%"}}>
-                <div style={{width: "15%", height: "100%"}}>
-                    <button style={{fontSize: "1.8em"}} onClick={() => {
+            <div style={{ width: "100%", height: "10%", marginTop: "5%" }}>
+                <div style={{ width: "15%", height: "100%" }}>
+                    <button style={{ fontSize: "1.8em" }} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
                             router.push('/igeport/link');
@@ -75,17 +72,16 @@ export default function iGeport(){
                         }
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round"
-                                  strokeLinejoin="round"/>
+                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
                 </div>
             </div>
             {pageComponent(paging)}
 
-            {isInfo ? <div style={{display: 'flex', justifyContent: 'center', gap: '8px', margin: '25px 0'}}></div> :
-                <div style={{display: 'flex', justifyContent: 'center', gap: '8px', margin: '20px 0'}}>
-                    {Array.from({length: 5}, (_, index) => (
+            {isInfo ? <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '25px 0' }}></div> :
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '20px 0' }}>
+                    {Array.from({ length: 5 }, (_, index) => (
                         <span
                             key={index}
                             style={{
@@ -113,24 +109,24 @@ export default function iGeport(){
                 justifyContent: "center",
                 pointerEvents: isVaild ? "auto" : "none",
                 opacity: isVaild ? 1 : 0.5,
-                fontSize:"1.2em"
+                fontSize: "1.2em"
             }}
                  onClick={() => {
                      if (paging > 4) {
                          router.refresh();
                          router.push('/user-info'); // 다음 페이지로 이동하자
                      }
-                     else{
+                     else {
                          setPaging(prev => prev + 1)
                      }
                  }}>
                 다음으로
             </div>
         </div>
-    )
+    );
 }
 
-
+// Component definitions for First, Second, Third, Fourth, and Fifth remain the same
 
 export function Information() {
     return (
