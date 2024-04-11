@@ -116,6 +116,12 @@ export default function Geport(){
             }}
                  onClick={() => {
                      if (paging > 4) {
+                         const content = answer.map((ans) => {
+                             return ans.content;
+                         });
+                         // 배열을 문자열 형태로 변환
+                         const contentString = JSON.stringify(content);
+                         localStorage.setItem('geport-answer', contentString);
                          router.refresh();
                          router.push('/user-info'); // 다음 페이지로 이동하자
                      }

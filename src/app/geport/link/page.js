@@ -124,6 +124,12 @@ export default function GeportLink(){
             }}
                  onClick={() => {
                      if (green && isValidCount) {
+                         const content = questionList.map((question) => {
+                             return question.content;
+                         });
+                         // 배열을 문자열 형태로 변환
+                         const contentString = JSON.stringify(content);
+                         localStorage.setItem('geport-link', contentString);
                          router.push("/geport");
                          router.refresh();
                      }
