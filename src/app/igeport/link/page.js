@@ -69,8 +69,8 @@ export default function iGeportLink() {
             flexDirection: 'column',
             weight: "100%"
         }}>
-            <div style={{width: "100%", height: "7%", marginTop: "5%"}}>
-                <div style={{width: "80%", height: "14%", marginLeft: "3%"}}>
+            <div style={{width: "100%", height: "10%", marginTop: "5%"}}>
+                <div style={{width: "80%", height: "14%" }}>
                     <button style={{fontSize: "1.8em"}} onClick={() => router.push('/')}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

@@ -184,18 +184,17 @@ export function First({answer, page, update}){
             height: '100vh'
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4em",
-                marginBottom: "20px" , paddingLeft: "4%", paddingRight: "4%"}}>
-                다음 중 자신과 가장 가까운 것을 <br/>선택해주세요
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "4%"}}>
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "0.9rem",
+                fontSize: "1.0rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                paddingLeft: "4%",
-                paddingRight: "4%",
-                paddingBottom:"4%"
+                paddingLeft: "5%",
+                paddingBottom:"5%"
             }}>
                 iGeport는 당신의 심리를 심층적으로 분석합니다.<br/>
                 몇 가지 질문에 대답해주세요<br/>
@@ -211,7 +210,6 @@ export function First({answer, page, update}){
                 padding: "2%",
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize: '20px'
             }}>
                 <span style={{fontSize: '1.0rem'}}>
                     {options.map((option, index) => (
@@ -256,7 +254,7 @@ export function Second({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
@@ -320,7 +318,7 @@ export function Third({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
@@ -384,7 +382,7 @@ export function Fifth({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
@@ -450,7 +448,7 @@ export function Fourth({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
