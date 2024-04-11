@@ -16,6 +16,11 @@
   }
 }
 
+html{
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
 body {
   height: 100vh;
 }

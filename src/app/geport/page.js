@@ -116,6 +116,12 @@ export default function Geport(){
             }}
                  onClick={() => {
                      if (paging > 4) {
+                         const content = answer.map((ans) => {
+                             return ans.content;
+                         });
+                         // 배열을 문자열 형태로 변환
+                         const contentString = JSON.stringify(content);
+                         localStorage.setItem('geport-answer', contentString);
                          router.refresh();
                          router.push('/user-info'); // 다음 페이지로 이동하자
                      }
@@ -251,7 +257,7 @@ export function Second({answer, page, update}) {
                         color: "#C6C6C6", borderRadius: "10px",
                         width : "100%", height : "100%", padding : "2%"
                     }}
-                    placeholder={"명으로 삼고자 합니다. " +
+                    placeholder={"예시: \"도전을 통해 변화를 이끈다\"는 마음가짐을 좌우명으로 삼고자 합니다. " +
                         "소프트콘 뷰어십 프로젝트를 진행하며 스트리밍 서비스에 대한 " +
                         "새로운 해결책을 제시할 수 있었던 경험은 제게 어떤 상황에서도 " +
                         "포기하지 않고 도전하는 가치를 깊이 깨닫게 해주었습니다. " +
@@ -301,7 +307,7 @@ export function Third({answer, page, update}) {
                         color: "#C6C6C6", borderRadius: "10px",
                         width : "100%", height : "100%", padding : "2%"
                     }}
-                    placeholder={"문제를 정확하게 분석하여 해결하는 것을 좋아합니다. " +
+                    placeholder={"예시: 문제를 정확하게 분석하여 해결하는 것을 좋아합니다. " +
                         "그래서 문제의 근본 원인을 파악하여 문제를 정의하기 위해 노력합니다."}
                     value={myContent}
                     onChange={(e) => update(page, e.target.value)}
@@ -348,7 +354,7 @@ export function Fourth({answer, page, update}) {
                         color: "#C6C6C6", borderRadius: "10px",
                         width : "100%", height : "100%", padding : "2%"
                     }}
-                    placeholder={"소셜리스닝을 잘 합니다. " +
+                    placeholder={"예시: 소셜리스닝을 잘 합니다. " +
                         "다양한 분야에 관심이 많아서 많은 사람의 의견에 귀를 기울이고, " +
                         "저만의 의견을 정립하려고 노력합니다."}
                     value={myContent}
@@ -397,7 +403,7 @@ export function Fifth({answer, page, update}){
                         color: "#C6C6C6", borderRadius: "10px",
                         width : "100%", height : "100%", padding : "2%"
                     }}
-                    placeholder={"대학교 2학년 때, 학교 생활에 흥미를 느끼지 못하고 많이 방황했던 경험이 있습니다. " +
+                    placeholder={"예시: 대학교 2학년 때, 학교 생활에 흥미를 느끼지 못하고 많이 방황했던 경험이 있습니다. " +
                         "하지만 서비스를 제작하는 과제를 진행하면서 몇날 며칠 밤을 세워가며 프로젝트를 완성했고," +
                         " 그 결과로 성공적으로 프로젝트를 마무리했습니다. 이 과정 덕분에 학교 생활에 대한 흥미를 되찾았습니다."}
                     value={myContent}
