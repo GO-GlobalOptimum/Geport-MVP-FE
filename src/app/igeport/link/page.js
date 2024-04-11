@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+
 const Question = (props) => {
     // 변경 사항을 로컬 스토리지에 저장하는 함수
     const handleChange = (e) => {
@@ -32,6 +33,14 @@ export default function IGeportLink() {
     const router = useRouter();
     const [questionList, setQuestionList] = useState([]);
     const [green, setGreen]= useState(false);
+    const [isUrl, setIsUrl] = useState(false);
+    const pattern = new RegExp('^(https?:\\/\\/)?'+ // 프로토콜
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // 도메인명
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // 혹은 ip (v4) 주소
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // 포트번호와 경로
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // 쿼리 파라미터
+        '(\\#[-a-z\\d_]*)?$','i'); // 해시 태그들을 허용
+
     useEffect(() => {
         // 초기 로드 시 로컬 스토리지에서 데이터를 불러옵니다
         const loadedQuestions = [];
@@ -48,8 +57,10 @@ export default function IGeportLink() {
         const allQuestionsFilled = questionList.every(question => question.content !== "");
         const isCountValid = questionList.length === 4;
         const isValid = allQuestionsFilled && isCountValid ;
-        setGreen(isValid);
+        const isUrlValid = questionList.every(question => pattern.test(question.content));
 
+        setGreen(isValid);
+        setIsUrl(isUrlValid);
     }, [questionList]);
 
     const updateQuestionContent = (id, newContent) => {
@@ -114,7 +125,13 @@ export default function IGeportLink() {
                 opacity: 1,
                 fontSize:"1.2em"
             }} onClick={() => {
-                if (green) {
+                if(!green){
+                    alert("모두 입력해주세요.")
+                }
+                if(!isUrl){
+                    alert("입력한 값이 url인지 확인해주세요.")
+                }
+                if (green && isUrl) {
                     router.push("/igeport");
                     router.refresh();
                 }
