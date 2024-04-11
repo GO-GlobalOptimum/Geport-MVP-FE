@@ -12,6 +12,16 @@ export default function Geport(){
     ]);
     const [isVaild, setIsVaild] = useState(false);
 
+    useEffect(()=>{
+        const content = localStorage.getItem('geport-answer') || "";
+        const loadedAnswerText = content ? JSON.parse(content) : ["","","","",""];
+        const loadedAnswers = loadedAnswerText.map((answer, index) => {
+            // index는 0부터 시작하므로, 1을 더해줍니다.
+            return { id: index + 1, content: answer };
+        });
+        setAnswer(loadedAnswers);
+    },[]);
+
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 5;
         setIsInfo(!isPage);
@@ -123,7 +133,7 @@ export default function Geport(){
                          const contentString = JSON.stringify(content);
                          localStorage.setItem('geport-answer', contentString);
                          router.refresh();
-                         router.push('/user-info'); // 다음 페이지로 이동하자
+                         router.push('/userinfo'); // 다음 페이지로 이동하자
                      }
                      else{
                          setPaging(prev => prev + 1)

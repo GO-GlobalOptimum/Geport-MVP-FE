@@ -73,7 +73,7 @@ export default function Userinfo(){
                     <button style={{fontSize: "1.8em"}} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
-                            router.push('/view');
+                            router.push('/onboarding');
                         } else {
                             setPaging(prev => prev - 1)
                         }
