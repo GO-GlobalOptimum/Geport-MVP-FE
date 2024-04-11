@@ -3,7 +3,7 @@ import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 
-export default function onboarding(){
+export default function Onboarding(){
     const router = useRouter();
     const [paging, setPaging] = useState(1);
     const [lastPage, setLastPage] = useState(false);

@@ -3,7 +3,7 @@ import {useRouter} from "next/navigation";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 import { useEffect, useState } from "react";
 
-export default function iGeport() {
+export default function IGeport() {
     const router = useRouter();
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);

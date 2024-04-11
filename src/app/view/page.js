@@ -1,7 +1,7 @@
 // "use client"
 import Image from "next/image";
 import Link from "next/link";
-export default function view() {
+export default function View() {
     return (
         <div style={{backgroundColor: "#181818", height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
             <div style = {{marginTop : '30px'}}>
