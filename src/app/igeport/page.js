@@ -8,31 +8,33 @@ export default function iGeport() {
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);
     const [answer, setAnswer] = useState([]);
-    const [isVaild, setIsVaild] = useState(false);
+    const [isValid, setIsValid] = useState(false);
+
     useEffect(() => {
-        // 초기 로드 시 로컬 스토리지에서 데이터 불러오기
         const loadedAnswers = [];
         for (let i = 1; i <= 5; i++) {
             const content = localStorage.getItem(`iGeport-answer-${i}`) || "";
             loadedAnswers.push({ id: i, content });
         }
         setAnswer(loadedAnswers);
+        console.log("Answers loaded:", loadedAnswers);
     }, []);
 
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 5;
         setIsInfo(!isPage);
         const pageContent = answer.find(ans => ans.id === paging)?.content || "";
-        const isContent = pageContent !== "";
-        setIsVaild(isContent || !isPage);
-    }, [paging, answer]);
+        setIsValid(pageContent !== "" || !isPage);
+        console.log(`Current page: ${paging}, Is valid: ${isValid}`);
+    }, [paging, answer, isValid]);
 
     const update = (id, newContent) => {
         const updatedAnswers = answer.map(ans =>
             ans.id === id ? { ...ans, content: newContent } : ans
         );
         setAnswer(updatedAnswers);
-        localStorage.setItem(`iGeport-answer-${id}`, newContent); // 로컬 스토리지에 저장
+        localStorage.setItem(`iGeport-answer-${id}`, newContent);
+        console.log(`Updated answer ${id}: ${newContent}`);
     };
 
     const pageComponent = (page) => {
@@ -49,6 +51,19 @@ export default function iGeport() {
                 return <Fifth answer={answer} page={page} update={update} />;
             default:
                 return <Information />;
+        }
+    };
+
+    const nextButtonHandler = () => {
+        if (paging > 4) {
+            for (let i = 1; i <= 5; i++) {
+                const storedAnswer = localStorage.getItem(`iGeport-answer-${i}`);
+                console.log(`Answer ${i}: ${storedAnswer}`);
+            }
+            router.refresh();
+            router.push('/user-info');
+        } else {
+            setPaging(prev => prev + 1);
         }
     };
 
@@ -99,33 +114,24 @@ export default function iGeport() {
             <div style={{
                 width: "91%",
                 height: "7.5%",
-                backgroundColor: isVaild ? "#1AE57C" : "#363636",
+                backgroundColor: isValid ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
                 margin: "4.5%",
                 marginBottom: "15%",
-                color: isVaild ? "black" : "#C6C6C6",
+                color: isValid ? "black" : "#C6C6C6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                pointerEvents: isVaild ? "auto" : "none",
-                opacity: isVaild ? 1 : 0.5,
+                pointerEvents: isValid ? "auto" : "none",
+                opacity: isValid ? 1 : 0.5,
                 fontSize: "1.2em"
             }}
-                 onClick={() => {
-                     if (paging > 4) {
-                         router.refresh();
-                         router.push('/user-info'); // 다음 페이지로 이동하자
-                     }
-                     else {
-                         setPaging(prev => prev + 1)
-                     }
-                 }}>
+                 onClick={nextButtonHandler}>
                 다음으로
             </div>
         </div>
     );
 }
-
 // Component definitions for First, Second, Third, Fourth, and Fifth remain the same
 
 export function Information() {
@@ -239,7 +245,7 @@ export function Second({answer, page, update}){
     const options = ['나는 목표를 달성하기 위해 노력하고, 포기하지 않는다.', '나는 업무나 과제를 미루는 경향이 있다.']
 
     // 라디오 버튼 하나의 높이 (픽셀 단위)
-    const radioButtonHeight = 80;
+    const radioButtonHeight = 65;
 
     // 라디오 버튼 그룹 전체의 높이 계산
     const radioGroupHeight = options.length * radioButtonHeight;
@@ -367,7 +373,7 @@ export function Fifth({answer, page, update}){
    // const options = ['', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
     const options = ['나는 종종 스트레스나 불안을 느낀다.','나는 감정 상태가 자주 바뀌는 편이다.']
     // 라디오 버튼 하나의 높이 (픽셀 단위)
-    const radioButtonHeight = 80;
+    const radioButtonHeight = 65;
 
     // 라디오 버튼 그룹 전체의 높이 계산
     const radioGroupHeight = options.length * radioButtonHeight;

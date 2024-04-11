@@ -38,6 +38,7 @@ export default function iGeportLink() {
         for (let i = 1; i <= 4; i++) {
             const content = localStorage.getItem(`blogLink-${i}`) || "";
             loadedQuestions.push({ id: i, content });
+            console.log(`Answer ${i}: ${content}`);
         }
         setQuestionList(loadedQuestions);
     }, []);
