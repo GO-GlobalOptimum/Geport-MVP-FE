@@ -75,8 +75,8 @@ export default function iGeport(){
                         }
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27 30L21 24L27 18" stroke="white" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round"/>
+                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round"
+                                  strokeLinejoin="round"/>
                         </svg>
                     </button>
                 </div>
@@ -180,21 +180,21 @@ export function First({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em",
+            <div style={{width: "100%", height: "10%", fontSize: "1.4em",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을 <br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "1.2em",
+                fontSize: "1.0em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "5%",
                 paddingRight: "5%",
                 paddingBottom:"5%"
             }}>
-                iGeport는 당신의 심리를 집중적으로 분석합니다. <br/>
+                iGeport는 당신의 심리를 집중적으로 분석합니다.<br/>
                 몇 가지 질문에 대답해주세요<br/>
             </div>
             <div style={{
@@ -208,24 +208,33 @@ export function First({answer, page, update}){
                 padding: "2%",
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize:'20px'
+                fontSize: '20px'
             }}>
-                {options.map((option, index) => (
-                    <label key={index} style={{ height: `${radioButtonHeight}px`, display: 'flex', alignItems: 'center'}}>
-                        <input
-                            type="radio"
-                            name="myRadioGroup"
-                            value={option}
-                            checked={myContent === option}
-                            onChange={(e) => update(page, e.target.value)}
-                            style={{ width:'15px', height:'15px',accentColor: '#C6C6C6', marginRight: '10px' }}
-                        />
-                        {option}
-                    </label>
-                ))}
+                <span style={{fontSize: '1.0rem'}}>
+                    {options.map((option, index) => (
+                        <label key={index}
+                               style={{height: `${radioButtonHeight}px`, display: 'flex', alignItems: 'center'}}>
+                            <input
+                                type="radio"
+                                name="myRadioGroup"
+                                value={option}
+                                checked={myContent === option}
+                                onChange={(e) => update(page, e.target.value)}
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    accentColor: '#C6C6C6',
+                                    marginRight: '10px',
+                                    marginLeft: '10px'
+                                }}
+                            />
+                            {option}
+                        </label>
+                    ))}
+                </span>
             </div>
         </div>
-    )
+)
 }
 
 export function Second({answer, page, update}){
@@ -242,14 +251,14 @@ export function Second({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em",
+            <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 다음 중 자신과 가장 가까운 것을 선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "1.2em",
+                fontSize: "1.0rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "5%",
@@ -270,8 +279,8 @@ export function Second({answer, page, update}){
                 padding: "2%",
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize:'20px'
             }}>
+                <span style={{fontSize:'1.0rem'}}>
                 {options.map((option, index) => (
                     <label key={index} style={{ height: `${radioButtonHeight}px`, display: 'flex', alignItems: 'center'}}>
                         <input
@@ -280,11 +289,12 @@ export function Second({answer, page, update}){
                             value={option}
                             checked={myContent === option}
                             onChange={(e) => update(page, e.target.value)}
-                            style={{ width:'15px', height:'15px',accentColor: '#C6C6C6', marginRight: '10px' }}
+                            style={{ width:'20px', height:'20px',accentColor: '#C6C6C6', marginRight: '10px', marginLeft: '10px'}}
                         />
                         {option}
                     </label>
                 ))}
+                </span>
             </div>
         </div>
     )
@@ -305,14 +315,14 @@ export function Third({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em",
+            <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 다음 중 자신과 가장 가까운 것을 선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "1.2em",
+                fontSize: "1.0rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "5%",
@@ -335,6 +345,7 @@ export function Third({answer, page, update}){
                 flexDirection: 'column',
                 fontSize:'20px'
             }}>
+                <span style={{fontSize:'1.0rem'}}>
                 {options.map((option, index) => (
                     <label key={index} style={{ height: `${radioButtonHeight}px`, display: 'flex', alignItems: 'center'}}>
                         <input
@@ -343,11 +354,12 @@ export function Third({answer, page, update}){
                             value={option}
                             checked={myContent === option}
                             onChange={(e) => update(page, e.target.value)}
-                            style={{ width:'15px', height:'15px',accentColor: '#C6C6C6', marginRight: '10px' }}
+                            style={{ width:'20px', height:'20px',accentColor: '#C6C6C6', marginRight: '10px', marginLeft: '10px'}}
                         />
                         {option}
                     </label>
                 ))}
+                </span>
             </div>
         </div>
     )
@@ -367,14 +379,14 @@ export function Fifth({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em",
+            <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 다음 중 자신과 가장 가까운 것을 선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "1.2em",
+                fontSize: "1.0rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "5%",
@@ -397,6 +409,7 @@ export function Fifth({answer, page, update}){
                 flexDirection: 'column',
                 fontSize:'20px'
             }}>
+                <span style={{fontSize:'1.0rem'}}>
                 {options.map((option, index) => (
                     <label key={index} style={{ height: `${radioButtonHeight}px`, display: 'flex', alignItems: 'center'}}>
                         <input
@@ -405,11 +418,12 @@ export function Fifth({answer, page, update}){
                             value={option}
                             checked={myContent === option}
                             onChange={(e) => update(page, e.target.value)}
-                            style={{ width:'15px', height:'15px',accentColor: '#C6C6C6', marginRight: '10px' }}
+                            style={{ width:'20px', height:'20px',accentColor: '#C6C6C6', marginRight: '10px', marginLeft: '10px'}}
                         />
                         {option}
                     </label>
                 ))}
+                </span>
             </div>
         </div>
     )
@@ -430,14 +444,14 @@ export function Fourth({answer, page, update}){
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.6em",
+            <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
                 다음 중 자신과 가장 가까운 것을 선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "1.2em",
+                fontSize: "1.0rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "5%",
@@ -460,6 +474,7 @@ export function Fourth({answer, page, update}){
                 flexDirection: 'column',
                 fontSize:'20px'
             }}>
+                <span style={{fontSize:'1.0rem'}}>
                 {options.map((option, index) => (
                     <label key={index} style={{ height: `${radioButtonHeight}px`, display: 'flex', alignItems: 'center'}}>
                         <input
@@ -468,11 +483,12 @@ export function Fourth({answer, page, update}){
                             value={option}
                             checked={myContent === option}
                             onChange={(e) => update(page, e.target.value)}
-                            style={{ width:'15px', height:'15px',accentColor: '#C6C6C6', marginRight: '10px' }}
+                            style={{ width:'20px', height:'20px',accentColor: '#C6C6C6', marginRight: '10px', marginLeft: '10px'}}
                         />
                         {option}
                     </label>
                 ))}
+                </span>
             </div>
         </div>
     )

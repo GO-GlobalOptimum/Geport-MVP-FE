@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 const Question = (props) => {
     return (
         <div style={{borderStyle: "round",
-            margin: "3%", width: "90%", height : "12%", borderRadius: "10px", display: "flex"}}>
+            margin: "3%", width: "94%", height : "12%", borderRadius: "10px", display: "flex", }}>
             <input
-                style={{backgroundColor: "#363636", width: "100%", height: "100%", borderRadius: "10px", fontSize:"1.2em", padding:"10px"}}
+                style={{backgroundColor: "#363636", width: "100%", height: "100%", borderRadius: "10px", fontSize:"1.0rem", padding:"10px"}}
                 placeholder = "이곳에 블로그 링크를 첨부해주세요" value={props.question.content}
                 onChange={(e) => props.updateQuestionContent(props.question.id, e.target.value)}/>
         </div>
@@ -53,7 +53,7 @@ export default function iGeportLink(){
                     <button style={{fontSize: "1.8em"}} onClick={() => {
                         router.push('/'); // 375 811
                     }}><svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M27 30L21 24L27 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                        </svg>
                     </button>
                 </div>
