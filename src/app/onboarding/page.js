@@ -170,14 +170,21 @@ export function First() {
             }}>
                 내 블로그를 브랜드로 만들어보세요
             </div>
-            <div style={{
+            < style={{
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1em",
+                fontSize: "0.9rem",
+                width: "90%",
                 color: "#C6C6C6",
-                marginTop: "3%"
+                marginTop: "3%",
+                textAlign: "center"
             }}>
-                Geport 소개...
+                퍼스널 브랜딩이란 ‘나만의 개성과 매력, 재능을 브랜드화하여 스스로의 가치를 높이는 행위’입니다. 이런 차별화를 통해 스스로의 가치를 높이는 게 퍼스널 브랜딩의
+                목적입니다.<br/><br/>
+                점점 자신의 성장 과정을 기록하는 사람들이 많아지고, 그 활동을 통해 퍼스널 브랜딩을 하려는 수요가 꾸준히 증가하고 있습니다. 하지만, 게시물이 많아지면 한눈에 들어오지 않아 오히려
+                브랜딩에 방해가 될 수 있다는 문제가 있습니다.<br/><br/>
+                <span style={{fontWeight: "bolder"}}>“블로그로 시작하는 나만의 퍼스널 브랜딩, Geport”</span><br/><br/>
+                저희 서비스에서는 이러한 문제를 해결하기 위해 대형 언어 모델(LLMs)로 자신의 블로그 게시물을 바탕으로 생성한 Geport를 제공합니다.
             </div>
         </div>
     )
@@ -223,12 +230,16 @@ export function Second() {
             </div>
             <div style={{
                 alignItems: "center",
+                width: "80%",
                 justifyContent: "center",
-                fontSize: "1em",
+                fontSize: "0.8rem",
                 color: "#C6C6C6",
                 marginTop: "3%"
             }}>
-                이용 약관 전문 : Geport는 이름, 나이, 메일 주소를 수집하며...
+                <br/>Geport를 사용함으로써 귀하는 아래 사용자 동의서에 동의하는 것으로 간주됩니다.<br/><br/>
+                1. 책임: Geport의 개발자는 이 시스템의 신뢰성을 보장하지 않으며 사용으로 인해 발생하는 어떠한 손해에 대해서도 책임을 지지 않습니다.<br/><br/>
+                2. 콘텐츠: Geportp은 OpenAI chatgpt API를 사용하므로 대화하는 내용은 OpenAI로 보내지고 각각 API사용약관에 따라 이 콘텐츠는 서비스 개선을 위해 사용될 수
+                있습니다. 즉 사용자가 Geport 및 OpenAI에 콘텐츠 사용 라이선스를 부여합니다.
             </div>
         </div>
     )
