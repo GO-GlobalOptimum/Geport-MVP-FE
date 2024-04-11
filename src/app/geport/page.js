@@ -142,7 +142,7 @@ export function Information() {
         }}>
             <div style={{width: "100%", height: "15%", fontSize: "1.6em",
                 marginBottom: "5%", paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 질문에 가능한 상쇄하게
+                다음 질문에 가능한 상세하게
                 답변해주세요
             </div>
             <div style={{
