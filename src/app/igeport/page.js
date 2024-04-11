@@ -89,7 +89,7 @@ export default function iGeport(){
                         <span
                             key={index}
                             style={{
-                                height: '10px',
+                                height: '9px',
                                 width: '10px',
                                 backgroundColor: paging === index + 1 ? '#1AE57C' : '#C6C6C6',
                                 borderRadius: '50%',
@@ -101,18 +101,19 @@ export default function iGeport(){
             }
 
             <div style={{
-                width: "90%",
-                height: "50px",
+                width: "91%",
+                height: "7.5%",
                 backgroundColor: isVaild ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
-                margin: "5%",
-                marginBottom: "6%",
+                margin: "4.5%",
+                marginBottom: "15%",
                 color: isVaild ? "black" : "#C6C6C6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 pointerEvents: isVaild ? "auto" : "none",
-                opacity: isVaild ? 1 : 0.5
+                opacity: isVaild ? 1 : 0.5,
+                fontSize:"1.2em"
             }}
                  onClick={() => {
                      if (paging > 4) {
@@ -181,20 +182,20 @@ export function First({answer, page, update}){
             height: '100vh'
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4em",
-                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
+                marginBottom: "20px" , paddingLeft: "4%", paddingRight: "4%"}}>
                 다음 중 자신과 가장 가까운 것을 <br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "1.0em",
+                fontSize: "0.9rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                paddingLeft: "5%",
-                paddingRight: "5%",
-                paddingBottom:"5%"
+                paddingLeft: "4%",
+                paddingRight: "4%",
+                paddingBottom:"4%"
             }}>
-                iGeport는 당신의 심리를 집중적으로 분석합니다.<br/>
+                iGeport는 당신의 심리를 심층적으로 분석합니다.<br/>
                 몇 가지 질문에 대답해주세요<br/>
             </div>
             <div style={{
@@ -398,8 +399,9 @@ export function Fifth({answer, page, update}){
             </div>
             <div style={{
                 justifyContent: "center",
-                width: "90%",
-                marginLeft: "5%",
+                width: "91%",
+                marginLeft: "4.5%",
+            //    margin: "4.5%",
                 height: `${radioGroupHeight}px`, // 여기에서 컨테이너의 높이를 조절합니다.
                 backgroundColor: "#363636",
                 color: "#C6C6C6",

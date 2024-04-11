@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 const Question = (props) => {
     return (
         <div style={{borderStyle: "round",
-            margin: "3%", width: "94%", height : "12%", borderRadius: "10px", display: "flex", }}>
+            margin: "4.5%", width: "91%", height : "12%", borderRadius: "10px", display: "flex", }}>
             <input
                 style={{backgroundColor: "#363636", width: "100%", height: "100%", borderRadius: "10px", fontSize:"1.0rem", padding:"10px"}}
                 placeholder = "이곳에 블로그 링크를 첨부해주세요" value={props.question.content}
@@ -85,11 +85,11 @@ export default function iGeportLink(){
                 }
             </div>
             <div style={{
-                width: "96%",
+                width: "91%",
                 height: "7%",
                 backgroundColor: green && isValidCount ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
-                margin: "2%",
+                margin: "4.5%",
                 marginBottom: "15%",
                 color: green && isValidCount ? "black" : "#C6C6C6",
                 display: "flex",
