@@ -1,61 +1,73 @@
 "use client"
 import {useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
+import { useEffect, useState } from "react";
 
-export default function iGeport(){
+export default function iGeport() {
     const router = useRouter();
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);
-    const [answer, setAnswer] = useState([
-        {id : 1, content: ""}, {id : 2, content: ""}, {id : 3, content: ""}, {id : 4, content: ""}, {id : 5, content: ""}
-    ]);
-    const [isVaild, setIsVaild] = useState(false);
+    const [answer, setAnswer] = useState([]);
+    const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+        const loadedAnswers = [];
+        for (let i = 1; i <= 5; i++) {
+            const content = localStorage.getItem(`iGeport-answer-${i}`) || "";
+            loadedAnswers.push({ id: i, content });
+        }
+        setAnswer(loadedAnswers);
+        console.log("Answers loaded:", loadedAnswers);
+    }, []);
 
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 5;
         setIsInfo(!isPage);
         const pageContent = answer.find(ans => ans.id === paging)?.content || "";
-        const isContent = pageContent !== ""
-        setIsVaild(isContent || !isPage);
-    }, [paging, answer]);
+        setIsValid(pageContent !== "" || !isPage);
+        console.log(`Current page: ${paging}, Is valid: ${isValid}`);
+    }, [paging, answer, isValid]);
 
     const update = (id, newContent) => {
         const updatedAnswers = answer.map(ans =>
             ans.id === id ? { ...ans, content: newContent } : ans
         );
         setAnswer(updatedAnswers);
+        localStorage.setItem(`iGeport-answer-${id}`, newContent);
+        console.log(`Updated answer ${id}: ${newContent}`);
     };
 
     const pageComponent = (page) => {
-        switch (page){
+        switch (page) {
             case 1:
-                return (
-                    <First answer={answer} page={page} update={update}/>
-                )
+                return <First answer={answer} page={page} update={update} />;
             case 2:
-                return (
-                    <Second answer={answer} page={page} update={update}/>
-                )
+                return <Second answer={answer} page={page} update={update} />;
             case 3:
-                return (
-                    <Third answer={answer} page={page} update={update}/>
-                )
+                return <Third answer={answer} page={page} update={update} />;
             case 4:
-                return (
-                    <Fourth answer={answer} page={page} update={update}/>
-                )
+                return <Fourth answer={answer} page={page} update={update} />;
             case 5:
-                return (
-                    <Fifth answer={answer} page={page} update={update}/>
-                )
+                return <Fifth answer={answer} page={page} update={update} />;
             default:
-                return(
-                    <Information/>
-                )
+                return <Information />;
         }
-    }
-    return(
+    };
+
+    const nextButtonHandler = () => {
+        if (paging > 4) {
+            for (let i = 1; i <= 5; i++) {
+                const storedAnswer = localStorage.getItem(`iGeport-answer-${i}`);
+                console.log(`Answer ${i}: ${storedAnswer}`);
+            }
+            router.refresh();
+            router.push('/user-info');
+        } else {
+            setPaging(prev => prev + 1);
+        }
+    };
+
+    return (
         <div style={{
             backgroundColor: "#181818",
             height: '100vh',
@@ -64,9 +76,9 @@ export default function iGeport(){
             flexDirection: 'column',
             weight: "100%"
         }}>
-            <div style={{width: "100%", height: "10%", marginTop: "5%"}}>
-                <div style={{width: "15%", height: "100%"}}>
-                    <button style={{fontSize: "1.8em"}} onClick={() => {
+            <div style={{ width: "100%", height: "10%", marginTop: "5%" }}>
+                <div style={{ width: "15%", height: "100%" }}>
+                    <button style={{ fontSize: "1.8em" }} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
                             router.push('/igeport/link');
@@ -75,17 +87,16 @@ export default function iGeport(){
                         }
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round"
-                                  strokeLinejoin="round"/>
+                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
                 </div>
             </div>
             {pageComponent(paging)}
 
-            {isInfo ? <div style={{display: 'flex', justifyContent: 'center', gap: '8px', margin: '25px 0'}}></div> :
-                <div style={{display: 'flex', justifyContent: 'center', gap: '8px', margin: '20px 0'}}>
-                    {Array.from({length: 5}, (_, index) => (
+            {isInfo ? <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '25px 0' }}></div> :
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '20px 0' }}>
+                    {Array.from({ length: 5 }, (_, index) => (
                         <span
                             key={index}
                             style={{
@@ -103,34 +114,25 @@ export default function iGeport(){
             <div style={{
                 width: "91%",
                 height: "7.5%",
-                backgroundColor: isVaild ? "#1AE57C" : "#363636",
+                backgroundColor: isValid ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
                 margin: "4.5%",
                 marginBottom: "15%",
-                color: isVaild ? "black" : "#C6C6C6",
+                color: isValid ? "black" : "#C6C6C6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                pointerEvents: isVaild ? "auto" : "none",
-                opacity: isVaild ? 1 : 0.5,
-                fontSize:"1.2em"
+                pointerEvents: isValid ? "auto" : "none",
+                opacity: isValid ? 1 : 0.5,
+                fontSize: "1.2em"
             }}
-                 onClick={() => {
-                     if (paging > 4) {
-                         router.refresh();
-                         router.push('/user-info'); // 다음 페이지로 이동하자
-                     }
-                     else{
-                         setPaging(prev => prev + 1)
-                     }
-                 }}>
+                 onClick={nextButtonHandler}>
                 다음으로
             </div>
         </div>
-    )
+    );
 }
-
-
+// Component definitions for First, Second, Third, Fourth, and Fifth remain the same
 
 export function Information() {
     return (
@@ -182,18 +184,17 @@ export function First({answer, page, update}){
             height: '100vh'
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4em",
-                marginBottom: "20px" , paddingLeft: "4%", paddingRight: "4%"}}>
-                다음 중 자신과 가장 가까운 것을 <br/>선택해주세요
+                marginBottom: "20px" , paddingLeft: "5%", paddingRight: "4%"}}>
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
                 height: "12.5%",
-                fontSize: "0.9rem",
+                fontSize: "1.0rem",
                 marginBottom: "5%",
                 color: "#C6C6C6",
-                paddingLeft: "4%",
-                paddingRight: "4%",
-                paddingBottom:"4%"
+                paddingLeft: "5%",
+                paddingBottom:"5%"
             }}>
                 iGeport는 당신의 심리를 심층적으로 분석합니다.<br/>
                 몇 가지 질문에 대답해주세요<br/>
@@ -209,7 +210,6 @@ export function First({answer, page, update}){
                 padding: "2%",
                 display: 'flex',
                 flexDirection: 'column',
-                fontSize: '20px'
             }}>
                 <span style={{fontSize: '1.0rem'}}>
                     {options.map((option, index) => (
@@ -243,7 +243,7 @@ export function Second({answer, page, update}){
     const options = ['나는 목표를 달성하기 위해 노력하고, 포기하지 않는다.', '나는 업무나 과제를 미루는 경향이 있다.']
 
     // 라디오 버튼 하나의 높이 (픽셀 단위)
-    const radioButtonHeight = 80;
+    const radioButtonHeight = 65;
 
     // 라디오 버튼 그룹 전체의 높이 계산
     const radioGroupHeight = options.length * radioButtonHeight;
@@ -254,7 +254,7 @@ export function Second({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
@@ -318,7 +318,7 @@ export function Third({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
@@ -371,7 +371,7 @@ export function Fifth({answer, page, update}){
    // const options = ['', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
     const options = ['나는 종종 스트레스나 불안을 느낀다.','나는 감정 상태가 자주 바뀌는 편이다.']
     // 라디오 버튼 하나의 높이 (픽셀 단위)
-    const radioButtonHeight = 80;
+    const radioButtonHeight = 65;
 
     // 라디오 버튼 그룹 전체의 높이 계산
     const radioGroupHeight = options.length * radioButtonHeight;
@@ -382,7 +382,7 @@ export function Fifth({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
@@ -448,7 +448,7 @@ export function Fourth({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.4rem",
                 marginBottom: "20px" , paddingLeft: "5%", paddingRight: "5%"}}>
-                다음 중 자신과 가장 가까운 것을 선택해주세요
+                다음 중 자신과 가장 가까운 것을<br/>선택해주세요
             </div>
             <div style={{
                 width: "96%",
