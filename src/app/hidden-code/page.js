@@ -17,10 +17,10 @@ export default function HiddenCodePage() {
         // 입력값이 '1'이면 해당 값을 id로 설정하여 view/[id] 페이지로 이동
         if (hiddenCode.trim() === '1') {
             //router.push(`/view/${hiddenCode}/iGeport_result0`);
-            router.push(`/view/${hiddenCode}/iGeport_result0`);
+            router.push(`/view/${hiddenCode}/iGeport_view`);
         }
         else if(hiddenCode.trim() === '2') {
-            router.push(`/view/${hiddenCode}/Geport_result0`);
+            router.push(`/view/${hiddenCode}/Geport_view`);
         }
         else {
             // 다른 경우에는 기본 경로인 '/'로 이동
