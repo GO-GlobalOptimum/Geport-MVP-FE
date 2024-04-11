@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
-import {white} from "next/dist/lib/picocolors";
 
 export default function UserviewPage() {
     const router = useRouter();
@@ -48,7 +47,7 @@ export default function UserviewPage() {
                     </div>
                 </div>
                     <div style={ {display : 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                        <Link href="/">
+                        <Link href={`/view/${id}/iGeport_result1`} as={`/view/${id}/iGeport_result1`}>
                             <button style={{color: '#0c0c0c', backgroundColor: '#1AE57C', padding: '10px 30px', borderRadius: '15px', width: '400px', fontWeight: 'bold', marginTop: '150px'}}>다음으로</button>
                         </Link>
                     </div>
