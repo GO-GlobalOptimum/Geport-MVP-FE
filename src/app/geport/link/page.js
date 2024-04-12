@@ -23,14 +23,33 @@ export default function GeportLink(){
     const [count, setCount] = useState(6);
     const [green, setGreen] = useState(false);
     const [isValidCount, setIsValidCount] = useState(false);
+    const [isUrl, setIsUrl] = useState(false);
+    const pattern = new RegExp('^(https?:\\/\\/)?'+ // 프로토콜
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // 도메인명
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // 혹은 ip (v4) 주소
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // 포트번호와 경로
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // 쿼리 파라미터
+        '(\\#[-a-z\\d_]*)?$','i'); // 해시 태그들을 허용
+
+    useEffect(() => {
+        const content = localStorage.getItem('geport-link') || "";
+        const loadedQuestionsText = content ? JSON.parse(content) : ["","","","",""];
+        const loadedQuestions = loadedQuestionsText.map((question, index) => {
+            // index는 0부터 시작하므로, 1을 더해줍니다.
+            return { id: index + 1, content: question };
+        });
+        setQuestionList(loadedQuestions);
+    }, []);
 
     useEffect(() => {
         // questionList의 모든 question.content가 비어 있지 않은 경우에만 true를 반환합니다.
         const allQuestionsFilled = questionList.every(question => question.content !== "");
         const isCountValid = questionList.length >= 5 && questionList.length <= 10;
+        const isUrlValid = questionList.every(question => pattern.test(question.content));
 
         // 모든 질문이 채워져 있으면 true, 하나라도 비어 있으면 false를 setGreen에 설정합니다.
         setGreen(allQuestionsFilled);
+        setIsUrl(isUrlValid);
         setIsValidCount(allQuestionsFilled && isCountValid);
     }, [questionList]);
 
@@ -123,7 +142,16 @@ export default function GeportLink(){
                 opacity: green && isValidCount ? 1 : 0.5
             }}
                  onClick={() => {
-                     if (green && isValidCount) {
+                     if (!green) {
+                         alert("모두 입력해주세요.")
+                     }
+                     if (!isValidCount){
+                         alert("입력 url 개수를 유의해주세요.")
+                     }
+                     if (!isUrl){
+                         alert("입력한 값이 url인지 확인해주세요.")
+                     }
+                     if (green && isValidCount && isUrl) {
                          const content = questionList.map((question) => {
                              return question.content;
                          });

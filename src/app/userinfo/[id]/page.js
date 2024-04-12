@@ -3,7 +3,8 @@ import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 
-export default function Userinfo(){
+export default function Userinfo(props){
+    const [id_port, setIdPort] = useState(parseInt(props.params.id));
     const router = useRouter();
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);
@@ -11,6 +12,19 @@ export default function Userinfo(){
         {id : 1, content: ""}, {id : 2, content: ""}, {id : 3, content: ""}, {id : 4, content: ""}, {id : 5, content: ""}, {id : 6, content: ""}
     ]);
     const [isVaild, setIsVaild] = useState(false);
+
+    useEffect(()=>{
+        console.log(id_port)
+
+        if (id_port === 1){ // geport : igeport 로그 삭제
+            localStorage.removeItem("igeport-answer")
+            localStorage.removeItem("igeport-link")
+        }
+        else{ // igeport : geport 로그 삭제
+            localStorage.removeItem("geport-answer")
+            localStorage.removeItem("geport-link")
+        }
+    },[]);
 
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 6;
@@ -73,7 +87,7 @@ export default function Userinfo(){
                     <button style={{fontSize: "1.8em"}} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
-                            router.push('/view');
+                            router.push('/onboarding');
                         } else {
                             setPaging(prev => prev - 1)
                         }
@@ -120,8 +134,14 @@ export default function Userinfo(){
             }}
                  onClick={() => {
                      if (paging === 6) {
-                         router.refresh();
-                         router.push('/view'); // 다음 페이지로 이동하자
+                         if (id_port === 1) {
+                             router.refresh();
+                             router.push('/view/Geport_view'); // 다음 페이지로 이동하자
+                         }
+                         else {
+                             router.refresh();
+                             router.push('/view/iGeport_view');
+                         }
                      }
                      else{
                          setPaging(prev => prev + 1)
