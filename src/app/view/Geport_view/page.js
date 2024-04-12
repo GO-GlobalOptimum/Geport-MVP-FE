@@ -21,26 +21,30 @@ export default function Geport_view(){
         //
         // return () => clearTimeout(timer); // Cleanup function to clear the timer
 
-        const data = {
-            "name": localStorage.getItem("name") || "",
-            "bio": localStorage.getItem("bio") || "",
-            "phone": localStorage.getItem("phone") || "",
-            "mbti": localStorage.getItem("mbti") || "",
-            "age": parseInt((localStorage.getItem("age"))) || 0,
-            "gender": localStorage.getItem("gender"),
-            "blog_links": JSON.parse(localStorage.getItem("geport-link")),
-            "questions": JSON.parse(localStorage.getItem("geport-answer"))
-        }
+        // const data = {
+        //     "name": localStorage.getItem("name") || "",
+        //     "bio": localStorage.getItem("bio") || "",
+        //     "phone": localStorage.getItem("phone") || "",
+        //     "mbti": localStorage.getItem("mbti") || "",
+        //     "age": parseInt((localStorage.getItem("age"))) || 0,
+        //     "gender": localStorage.getItem("gender"),
+        //     "blog_links": JSON.parse(localStorage.getItem("geport-link")),
+        //     "questions": JSON.parse(localStorage.getItem("geport-answer"))
+        // }
 
         const demo = {
-            "name": "의진",
-            "bio": "투지",
-            "phone": "01052672383",
-            "mbti": "INFJ",
-            "age": 23,
-            "gender": "남자",
-            "blog_links": JSON.parse(localStorage.getItem("geport-link")),
-            "questions": JSON.parse(localStorage.getItem("geport-answer"))
+            "name": "string",
+            "bio": "string",
+            "phone": "string",
+            "mbti": "string",
+            "age": 0,
+            "gender": "string",
+            "blog_links": [
+                "https://example.com/"
+            ],
+            "questions": [
+                "string"
+            ]
         }
 
         const options = {
@@ -52,11 +56,17 @@ export default function Geport_view(){
         };
 
         fetch('/api/geport/create', options)
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result);
+            .then(res => {
+                console.log('Server response:', res);
+                return res.json();
+            })
+            .then(result => {
+                console.log('Processed result:', result);
                 setLoading(false);
-            });
+            }).catch(error => {
+            console.error('Error handling in promise:', error);
+        });
+
 
 
     }, []); // This effect runs only once when the component mounts
