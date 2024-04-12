@@ -4,6 +4,16 @@ import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 
 export default function Userinfo(){
+
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        bio: "",
+        mbti: "",
+        age: "",
+        gender: "",
+        phone: ""
+    });
+
     const router = useRouter();
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);
@@ -12,15 +22,45 @@ export default function Userinfo(){
     ]);
     const [isVaild, setIsVaild] = useState(false);
 
+    const handleGenerateGeport = () => {
+        // 로컬 스토리지에 각각의 데이터를 별도의 키로 저장
+        localStorage.setItem('name', answer.find(ans => ans.id === 1)?.content || "");
+        localStorage.setItem('bio', answer.find(ans => ans.id === 2)?.content || "");
+        localStorage.setItem('mbti', answer.find(ans => ans.id === 3)?.content || "");
+        localStorage.setItem('age', answer.find(ans => ans.id === 4)?.content || "");
+        localStorage.setItem('gender', answer.find(ans => ans.id === 5)?.content || "");
+        localStorage.setItem('phone', answer.find(ans => ans.id === 6)?.content || "");
+
+        const age1 = localStorage.getItem("age") || "";
+        const gender1 = localStorage.getItem("gender") || "";
+        const phone1 = localStorage.getItem("phone") || "";
+
+        console.log("name:", answer.find(ans => ans.id === 1)?.content || "");
+        console.log("bio:", answer.find(ans => ans.id === 2)?.content || "");
+        console.log("mbti:", answer.find(ans => ans.id === 3)?.content || "");
+
+        console.log("age:", age1);
+        console.log("gender:", gender1);
+        console.log("phone:", phone1);
+    }
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 6;
         setIsInfo(!isPage);
         const pageContent = answer.find(ans => ans.id === paging)?.content || "";
         const isContent = pageContent !== ""
         setIsVaild(isContent || !isPage);
+        if (paging === 2) {
+            setIsVaild(true);
+        }
     }, [paging, answer]);
 
     const update = (id, newContent) => {
+        let updatedContent = newContent;
+        // 페이지가 6페이지(전화번호 입력 페이지)이면 전화번호를 정규화하여 저장
+        if (id === 6) {
+            updatedContent = newContent.replace(/\D/g, ""); // 숫자 이외의 문자는 제거
+            console.log(updatedContent);
+        }
         const updatedAnswers = answer.map(ans =>
             ans.id === id ? { ...ans, content: newContent } : ans
         );
@@ -73,14 +113,14 @@ export default function Userinfo(){
                     <button style={{fontSize: "1.8em"}} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
-                            router.push('/view');
+                            router.push('/view/Geport_view');
                         } else {
                             setPaging(prev => prev - 1)
                         }
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27 30L21 24L27 18" stroke="white" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round"/>
+                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round"
+                                  strokeLinejoin="round"/>
                         </svg>
                     </button>
                 </div>
@@ -120,8 +160,15 @@ export default function Userinfo(){
             }}
                  onClick={() => {
                      if (paging === 6) {
+                         const content = answer.map((ans) => {
+                             return ans.content;
+                         });
+                         // 배열을 문자열 형태로 변환
+                         const contentString = JSON.stringify(content);
+                         localStorage.setItem('userinfo-answer', contentString);
+                         handleGenerateGeport();
                          router.refresh();
-                         router.push('/view'); // 다음 페이지로 이동하자
+                         router.push('/view/Geport_view'); // 다음 페이지로 이동하자
                      }
                      else{
                          setPaging(prev => prev + 1)
@@ -419,6 +466,7 @@ export function Fifth({answer, page, update}){
 
 export function Six({answer, page, update}){
     const myContent = answer.find(ans => ans.id === page)?.content || "";
+
     return (
         <div style={{
             height: '100vh'
