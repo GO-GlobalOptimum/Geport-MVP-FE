@@ -133,7 +133,7 @@ export default function Geport(){
                          const contentString = JSON.stringify(content);
                          localStorage.setItem('geport-answer', contentString);
                          router.refresh();
-                         router.push('/userinfo'); // 다음 페이지로 이동하자
+                         router.push(`/userinfo/1`); // 다음 페이지로 이동하자
                      }
                      else{
                          setPaging(prev => prev + 1)
