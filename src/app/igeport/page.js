@@ -7,34 +7,33 @@ export default function IGeport() {
     const router = useRouter();
     const [paging, setPaging] = useState(0);
     const [isInfo, setIsInfo] = useState(true);
-    const [answer, setAnswer] = useState([]);
-    const [isValid, setIsValid] = useState(false);
-
-    useEffect(() => {
-        const loadedAnswers = [];
-        for (let i = 1; i <= 5; i++) {
-            const content = localStorage.getItem(`iGeport-answer-${i}`) || "";
-            loadedAnswers.push({ id: i, content });
-        }
+  //  const [answer, setAnswer] = useState([]);
+    const [isVaild, setIsVaild] = useState(false);
+    const [answer, setAnswer] = useState([
+        {id : 1, content: ""}, {id : 2, content: ""}, {id : 3, content: ""}, {id : 4, content: ""}, {id : 5, content: ""}
+    ]);
+    useEffect(()=>{
+        const content = localStorage.getItem('igeport-answer') || "";
+        const loadedAnswerText = content ? JSON.parse(content) : ["","","","",""];
+        const loadedAnswers = loadedAnswerText.map((answer, index) => {
+            // index는 0부터 시작하므로, 1을 더해줍니다.
+            return { id: index + 1, content: answer };
+        });
         setAnswer(loadedAnswers);
-        console.log("Answers loaded:", loadedAnswers);
-    }, []);
-
+    },[]);
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 5;
         setIsInfo(!isPage);
         const pageContent = answer.find(ans => ans.id === paging)?.content || "";
-        setIsValid(pageContent !== "" || !isPage);
-        console.log(`Current page: ${paging}, Is valid: ${isValid}`);
-    }, [paging, answer, isValid]);
+        const isContent = pageContent !== ""
+        setIsVaild(isContent || !isPage);
+    }, [paging, answer]);
 
     const update = (id, newContent) => {
         const updatedAnswers = answer.map(ans =>
             ans.id === id ? { ...ans, content: newContent } : ans
         );
         setAnswer(updatedAnswers);
-        localStorage.setItem(`iGeport-answer-${id}`, newContent);
-        console.log(`Updated answer ${id}: ${newContent}`);
     };
 
     const pageComponent = (page) => {
@@ -54,18 +53,18 @@ export default function IGeport() {
         }
     };
 
-    const nextButtonHandler = () => {
-        if (paging > 4) {
-            for (let i = 1; i <= 5; i++) {
-                const storedAnswer = localStorage.getItem(`iGeport-answer-${i}`);
-                console.log(`Answer ${i}: ${storedAnswer}`);
-            }
-            router.refresh();
-            router.push('/user-info');
-        } else {
-            setPaging(prev => prev + 1);
-        }
-    };
+    // const nextButtonHandler = () => {
+    //     if (paging > 4) {
+    //         for (let i = 1; i <= 5; i++) {
+    //             const storedAnswer = localStorage.getItem(`iGeport-answer-${i}`);
+    //             console.log(`Answer ${i}: ${storedAnswer}`);
+    //         }
+    //         router.refresh();
+    //         router.push('/user-info');
+    //     } else {
+    //         setPaging(prev => prev + 1);
+    //     }
+    // };
 
     return (
         <div style={{
@@ -76,9 +75,9 @@ export default function IGeport() {
             flexDirection: 'column',
             weight: "100%"
         }}>
-            <div style={{ width: "100%", height: "10%", marginTop: "5%" }}>
-                <div style={{ width: "15%", height: "100%" }}>
-                    <button style={{ fontSize: "1.8em" }} onClick={() => {
+            <div style={{width: "100%", height: "10%", marginTop: "5%"}}>
+                <div style={{width: "15%", height: "100%"}}>
+                    <button style={{fontSize: "1.8em"}} onClick={() => {
                         if (paging < 1) {
                             router.refresh();
                             router.push('/igeport/link');
@@ -87,16 +86,17 @@ export default function IGeport() {
                         }
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round"
+                                  strokeLinejoin="round"/>
                         </svg>
                     </button>
                 </div>
             </div>
             {pageComponent(paging)}
 
-            {isInfo ? <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '25px 0' }}></div> :
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '20px 0' }}>
-                    {Array.from({ length: 5 }, (_, index) => (
+            {isInfo ? <div style={{display: 'flex', justifyContent: 'center', gap: '8px', margin: '25px 0'}}></div> :
+                <div style={{display: 'flex', justifyContent: 'center', gap: '8px', margin: '20px 0'}}>
+                    {Array.from({length: 5}, (_, index) => (
                         <span
                             key={index}
                             style={{
@@ -110,28 +110,40 @@ export default function IGeport() {
                     ))}
                 </div>
             }
-
             <div style={{
-                width: "91%",
-                height: "7.5%",
-                backgroundColor: isValid ? "#1AE57C" : "#363636",
+                width: "90%",
+                height: "50px",
+                backgroundColor: isVaild ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
-                margin: "4.5%",
-                marginBottom: "15%",
-                color: isValid ? "black" : "#C6C6C6",
+                margin: "5%",
+                marginBottom: "6%",
+                color: isVaild ? "black" : "#C6C6C6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                pointerEvents: isValid ? "auto" : "none",
-                opacity: isValid ? 1 : 0.5,
-                fontSize: "1.2em"
+                pointerEvents: isVaild ? "auto" : "none",
+                opacity: isVaild ? 1 : 0.5
             }}
-                 onClick={nextButtonHandler}>
+                 onClick={() => {
+                     if (paging > 4) {
+                         const content = answer.map((ans) => {
+                             return ans.content;
+                         });
+                         // 배열을 문자열 형태로 변환
+                         const contentString = JSON.stringify(content);
+                         localStorage.setItem('igeport-answer', contentString);
+                         router.refresh();
+                         router.push('/user-info/0'); // 다음 페이지로 이동하자
+                     } else {
+                         setPaging(prev => prev + 1)
+                     }
+                 }}>
                 다음으로
             </div>
         </div>
     );
 }
+
 // Component definitions for First, Second, Third, Fourth, and Fifth remain the same
 
 export function Information() {
@@ -139,8 +151,10 @@ export function Information() {
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "15%", fontSize: "1.6em",
-                marginBottom: "5%", paddingLeft: "5%", paddingRight: "5%"}}>
+            <div style={{
+                width: "100%", height: "15%", fontSize: "1.6em",
+                marginBottom: "5%", paddingLeft: "5%", paddingRight: "5%"
+            }}>
                 다음 질문은 당신의 성향을 파악하기 위한 질문입니다.
             </div>
             <div style={{
@@ -169,7 +183,7 @@ export function Information() {
     )
 }
 
-export function First({answer, page, update}){
+export function First({answer, page, update}) {
     const myContent = answer.find(ans => ans.id === page)?.content || "";
     const options = ['나는 상상력이 풍부하다.', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
 
@@ -235,7 +249,7 @@ export function First({answer, page, update}){
                 </span>
             </div>
         </div>
-)
+    )
 }
 
 export function Second({answer, page, update}){
@@ -304,7 +318,7 @@ export function Second({answer, page, update}){
 
 export function Third({answer, page, update}){
     const myContent = answer.find(ans => ans.id === page)?.content || "";
-  //  const options = ['나는 상상력이 풍부하다.', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
+    //  const options = ['나는 상상력이 풍부하다.', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
     const options = ['나는 사회적 활동에 참여하는 것을 피하곤 한다.','나는 타인과의 상호작용에서 활력을 얻는다.']
     // 라디오 버튼 하나의 높이 (픽셀 단위)
     const radioButtonHeight = 80;
@@ -368,7 +382,7 @@ export function Third({answer, page, update}){
 
 export function Fifth({answer, page, update}){
     const myContent = answer.find(ans => ans.id === page)?.content || "";
-   // const options = ['', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
+    // const options = ['', '나는 예술적 경험을 중요하게 생각한다.','나는 아이디어를 떠올리는 일을 즐긴다.']
     const options = ['나는 종종 스트레스나 불안을 느낀다.','나는 감정 상태가 자주 바뀌는 편이다.']
     // 라디오 버튼 하나의 높이 (픽셀 단위)
     const radioButtonHeight = 65;
@@ -401,7 +415,7 @@ export function Fifth({answer, page, update}){
                 justifyContent: "center",
                 width: "91%",
                 marginLeft: "4.5%",
-            //    margin: "4.5%",
+                //    margin: "4.5%",
                 height: `${radioGroupHeight}px`, // 여기에서 컨테이너의 높이를 조절합니다.
                 backgroundColor: "#363636",
                 color: "#C6C6C6",
