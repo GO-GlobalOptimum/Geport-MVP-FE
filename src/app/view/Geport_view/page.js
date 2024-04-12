@@ -14,37 +14,15 @@ export default function Geport_view(){
     ]);
 
     useEffect(() => {
-        // Simulate loading for 3 seconds
-        // const timer = setTimeout(() => {
-        //     setLoading(false); // After 3 seconds, hide the loading screen
-        // }, 2000);
-        //
-        // return () => clearTimeout(timer); // Cleanup function to clear the timer
-
-        // const data = {
-        //     "name": localStorage.getItem("name") || "",
-        //     "bio": localStorage.getItem("bio") || "",
-        //     "phone": localStorage.getItem("phone") || "",
-        //     "mbti": localStorage.getItem("mbti") || "",
-        //     "age": parseInt((localStorage.getItem("age"))) || 0,
-        //     "gender": localStorage.getItem("gender"),
-        //     "blog_links": JSON.parse(localStorage.getItem("geport-link")),
-        //     "questions": JSON.parse(localStorage.getItem("geport-answer"))
-        // }
-
-        const demo = {
-            "name": "string",
-            "bio": "string",
-            "phone": "string",
-            "mbti": "string",
-            "age": 0,
-            "gender": "string",
-            "blog_links": [
-                "https://example.com/"
-            ],
-            "questions": [
-                "string"
-            ]
+        const data = {
+            "name": localStorage.getItem("name") || "",
+            "bio": localStorage.getItem("bio") || "",
+            "phone": localStorage.getItem("phone") || "",
+            "mbti": localStorage.getItem("mbti") || "",
+            "age": parseInt((localStorage.getItem("age"))) || 0,
+            "gender": localStorage.getItem("gender"),
+            "blog_links": JSON.parse(localStorage.getItem("geport-link")),
+            "questions": JSON.parse(localStorage.getItem("geport-answer"))
         }
 
         const options = {
@@ -52,7 +30,7 @@ export default function Geport_view(){
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(demo)
+            body: JSON.stringify(data)
         };
 
         fetch('/api/geport/create', options)
@@ -129,7 +107,7 @@ export default function Geport_view(){
                             <button style={{ fontSize: "1.8em" }} onClick={() => {
                                 if (paging < 1) {
                                     router.refresh();
-                                    router.push('/hidden-code');
+                                    router.push(`/userinfo/1`);
                                 } else {
                                     setPaging(prev => prev - 1)
                                 }
