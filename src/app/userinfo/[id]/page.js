@@ -4,6 +4,15 @@ import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 
 export default function Userinfo(props){
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        bio: "",
+        mbti: "",
+        age: "",
+        gender: "",
+        phone: ""
+    });
+
     const [id_port, setIdPort] = useState(parseInt(props.params.id));
     const router = useRouter();
     const [paging, setPaging] = useState(0);
@@ -13,9 +22,31 @@ export default function Userinfo(props){
     ]);
     const [isVaild, setIsVaild] = useState(false);
 
+    const handleGenerateGeport = () => {
+        // 로컬 스토리지에 각각의 데이터를 별도의 키로 저장
+        localStorage.setItem('name', answer.find(ans => ans.id === 1)?.content || "");
+        localStorage.setItem('bio', answer.find(ans => ans.id === 2)?.content || "");
+        localStorage.setItem('mbti', answer.find(ans => ans.id === 3)?.content || "");
+        localStorage.setItem('age', answer.find(ans => ans.id === 4)?.content || "");
+        localStorage.setItem('gender', answer.find(ans => ans.id === 5)?.content || "");
+        localStorage.setItem('phone', answer.find(ans => ans.id === 6)?.content || "");
+
+    }
+
+    const initAnswer = ()=>{
+        setAnswer([
+            {id : 1, content: localStorage.getItem('name')},
+            {id : 2, content: localStorage.getItem('bio')},
+            {id : 3, content: localStorage.getItem('mbti')},
+            {id : 4, content: localStorage.getItem('age')},
+            {id : 5, content: localStorage.getItem('gender')},
+            {id : 6, content: localStorage.getItem('phone')}
+        ]);
+    }
+
     useEffect(()=>{
         console.log(id_port)
-
+        initAnswer();
         if (id_port === 1){ // geport : igeport 로그 삭제
             localStorage.removeItem("igeport-answer")
             localStorage.removeItem("igeport-link")
@@ -24,6 +55,8 @@ export default function Userinfo(props){
             localStorage.removeItem("geport-answer")
             localStorage.removeItem("geport-link")
         }
+
+
     },[]);
 
     useEffect(() => {
@@ -32,9 +65,18 @@ export default function Userinfo(props){
         const pageContent = answer.find(ans => ans.id === paging)?.content || "";
         const isContent = pageContent !== ""
         setIsVaild(isContent || !isPage);
+        if (paging === 2) {
+            setIsVaild(true);
+        }
     }, [paging, answer]);
 
     const update = (id, newContent) => {
+        let updatedContent = newContent;
+        // 페이지가 6페이지(전화번호 입력 페이지)이면 전화번호를 정규화하여 저장
+        if (id === 6) {
+            updatedContent = newContent.replace(/\D/g, ""); // 숫자 이외의 문자는 제거
+            console.log(updatedContent);
+        }
         const updatedAnswers = answer.map(ans =>
             ans.id === id ? { ...ans, content: newContent } : ans
         );
@@ -93,8 +135,8 @@ export default function Userinfo(props){
                         }
                     }}>
                         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M27 30L21 24L27 18" stroke="white" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round"/>
+                            <path d="M27 30L21 24L27 18" stroke="white" strokeWidth="2" strokeLinecap="round"
+                                  strokeLinejoin="round"/>
                         </svg>
                     </button>
                 </div>
@@ -134,6 +176,7 @@ export default function Userinfo(props){
             }}
                  onClick={() => {
                      if (paging === 6) {
+                         handleGenerateGeport();
                          if (id_port === 1) {
                              router.refresh();
                              router.push('/view/Geport_view'); // 다음 페이지로 이동하자
