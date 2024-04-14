@@ -3,6 +3,11 @@ import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 import Image from "next/image";
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import * as d3 from 'd3';
+import cloud from 'd3-cloud';
+import { Radar } from 'react-chartjs-2';
 
 export default function iGeport_view(){
     const router = useRouter();
@@ -12,15 +17,9 @@ export default function iGeport_view(){
     const [answer, setAnswer] = useState([
         {id : 1, content: ""}, {id : 2, content: ""}, {id : 3, content: ""}, {id : 4, content: ""}, {id : 5, content: ""}, {id : 6, content: ""}
     ]);
+    const [data, setData]=useState({});
 
     useEffect(() => {
-        // Simulate loading for 3 seconds
-        // const timer = setTimeout(() => {
-        //     setLoading(false); // After 3 seconds, hide the loading screen
-        // }, 2000);
-        //
-        // return () => clearTimeout(timer); // Cleanup function to clear the timer
-
         const data = {
             "name": localStorage.getItem("name") || "",
             "bio": localStorage.getItem("bio") || "",
@@ -31,34 +30,48 @@ export default function iGeport_view(){
             "blog_links": JSON.parse(localStorage.getItem("igeport-link")),
             "questions": JSON.parse(localStorage.getItem("igeport-answer"))
         }
+        const name = data['name'];
 
-        const demo = {
-            "name": "의진",
-            "bio": "투지",
-            "phone": "01052672383",
-            "mbti": "INFJ",
-            "age": 23,
-            "gender": "남자",
-            "blog_links": JSON.parse(localStorage.getItem("igeport-link")),
-            "questions": JSON.parse(localStorage.getItem("igeport-answer"))
-        }
-
+        console.log(data)
         const options = {
             method: 'POST',
-            headers: {
+            headers: { // get 할때 빼버리면됨
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(demo)
+            body: JSON.stringify(data)
         };
 
-        fetch('/api/igeport/create', options)
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result);
-                setLoading(false);
-            });
-    }, []); // This effect runs only once when the component mounts
 
+
+        fetch('/api/igeport/create', options)
+            .then(res => {
+                console.log('Server response:', res);
+                return res.json();
+            })
+            .then(result => {
+                console.log('Processed result:', result); // result 변수에 json형태의 encrypted_id 가 저장되어 있음
+                // igeport/generate-dummy/result
+
+                fetch(`/api/igeport/generate-test/${result.encrypted_id}`, {method:'GET'})
+                    .then(res=>{
+                        return res.json()
+                    })
+                    .then(data=>{
+                        console.log(data)
+                        setData(data);
+                        setLoading(false);
+                        console.log("000", data);
+                    }).catch(error =>
+                     {
+                        console.error('Error handling in promise:', error);
+                     })
+            }).catch(error => {
+            console.error('Error handling in promise:', error);
+        });
+
+
+
+    }, []); // This effect runs only once when the component mounts
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 6;
         setIsInfo(!isPage);
@@ -76,31 +89,31 @@ export default function iGeport_view(){
         switch (page){
             case 1:
                 return (
-                    <First answer={answer} page={page} update={update}/>
+                    <First data={data} page={page} update={update}/>
                 )
             case 2:
                 return (
-                    <Second answer={answer} page={page} update={update}/>
+                    <Second data={data} page={page} update={update}/>
                 )
             case 3:
                 return (
-                    <Third answer={answer} page={page} update={update}/>
+                    <Third data={data} page={page} update={update}/>
                 )
             case 4:
                 return (
-                    <Fourth answer={answer} page={page} update={update}/>
+                    <Fourth data={data} page={page} update={update}/>
                 )
             case 5:
                 return (
-                    <Fifth answer={answer} page={page} update={update}/>
+                    <Fifth data={data} page={page} update={update}/>
                 )
             case 6:
                 return (
-                    <Six answer={answer} page={page} update={update}/>
+                    <Six data={data} page={page} update={update}/>
                 )
             default:
                 return(
-                    <Information/>
+                    <Information />
                 )
         }
     }
@@ -184,13 +197,15 @@ export default function iGeport_view(){
 
 
 export function Information() {
+    const user_name = localStorage.getItem("name")
+    const bio = localStorage.getItem("bio")
     return (
         <div style={{
             height: '100vh'
         }}>
             <div style={{width: "100%", height: "15%", fontSize: "1.6em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                (소개글 한문장), Uswername 님의 iGeport
+                {bio}, {user_name} 님의 iGeport
             </div>
             <div style={{
                 width: "100%",
@@ -202,14 +217,25 @@ export function Information() {
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Username 님의 블로그와 답변을 바탕으로 퍼스널 브랜딩에 필요한 심리 보고서를 준비했어요.
+                {user_name} 님의 블로그와 답변을 바탕으로 퍼스널 브랜딩에 필요한 심리 보고서를 준비했어요.
             </div>
         </div>
     )
 }
 
-export function First({answer, page, update}){
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+export function First({ data, page, update}){
+    // data 객체에서 바로 필요한 부분에 접근
+    if (!data || !data["blog_summarys"]) {
+        return <div>Loading or data not available...</div>; // 데이터 확인 로직 추가
+    }
+
+    const user_name = localStorage.getItem("name") || "Default User"; // 사용자 이름 가져오기, 기본값 설정
+
+    // blog_summarys에서 직접 각 일자의 데이터를 접근
+    const day1 = data["blog_summarys"]["1st"];
+    const day2 = data["blog_summarys"]["2nd"];
+    const day3 = data["blog_summarys"]["3rd"];
+    const day4 = data["blog_summarys"]["4th"];
 
     return (
         <div style={{
@@ -221,12 +247,17 @@ export function First({answer, page, update}){
                 display: 'none'
             }// 스크롤을 허용하는 부분
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "20px" , paddingLeft: "10%", paddingRight: "10%"}}>
-                Username 님의 블로그를 분석했어요
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                {user_name} 님의 블로그를 분석했어요
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.2em",
+                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                1일차
             </div>
             <div style={{
                 width: "100%",
@@ -236,12 +267,15 @@ export function First({answer, page, update}){
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop:"5%"
+                marginTop: "5%"
             }}>
-                그저 예시문
+                {day1}
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/gc_sky.jpg"} width={400} height={100} alt={"logo"}/>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.2em",
+                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                2일차
             </div>
             <div style={{
                 width: "100%",
@@ -251,12 +285,15 @@ export function First({answer, page, update}){
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop:"5%"
+                marginTop: "5%"
             }}>
-                그저 예시문
+                {day2}
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.2em",
+                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                3일차
             </div>
             <div style={{
                 width: "100%",
@@ -266,12 +303,15 @@ export function First({answer, page, update}){
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop:"5%"
+                marginTop: "5%"
             }}>
-                그저 예시문
+                {day3}
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/gc_sky.jpg"} width={400} height={100} alt={"logo"}/>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.2em",
+                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                4일차
             </div>
             <div style={{
                 width: "100%",
@@ -281,17 +321,284 @@ export function First({answer, page, update}){
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop:"5%"
+                marginTop: "5%"
             }}>
-                그저 예시문
+                {day4}
             </div>
         </div>
     )
 }
 
-export function Second({answer, page, update}) {
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+// Chart.js 라이브러리에 필요한 컴포넌트를 등록합니다.
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
+
+export function Second({data, page, update}) {
+    const user_name = localStorage.getItem("name") || "Default User";
+
+    // 데이터에서 감정별로 시간에 따른 변화 추출
+    const emotions = ['happy', 'joy', 'anxious',
+        'depressed', 'anger', 'sadness'];
+    const emotionData = emotions.map(emotion => ({
+        label: emotion,
+        data: [
+            data["emotions_wave"]["answer_1"][emotion],
+            data["emotions_wave"]["answer_2"][emotion],
+            data["emotions_wave"]["answer_3"][emotion],
+            data["emotions_wave"]["answer_4"][emotion]
+        ],
+        borderColor: getRandomColor(),
+        fill: false
+    }));
+
+    const chartData = {
+        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4'], // 시간 순서
+        datasets: emotionData
+    };
+
+    const options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top'
+            }
+        }
+    };
+
+    // 색상을 무작위로 생성하는 함수
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    return (
+        <div style={{height: '100vh', overflowY: 'auto'}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
+                이 기간 동안 {user_name} 님의 감정 변화를 보여드려요
+            </div>
+            <Line data={chartData} options={options} />
+        </div>
+    );
+}
+
+export function Third({data, page, update}) {
+    const user_name = localStorage.getItem("name") || "Default User";
+
+    // 데이터 구조에서 감정 SOS 점수 추출
+    const emotions = ['sadness', 'anger', 'depressed', 'anxious'];
+    const emotionData = emotions.map(emotion => ({
+        label: emotion,
+        data: [
+            data.emotions_sos.answer1 ? data.emotions_sos.answer1[emotion] : 0,
+            data.emotions_sos.answer3 ? data.emotions_sos.answer3[emotion] : 0,
+            data.emotions_sos.answer4 ? data.emotions_sos.answer4[emotion] : 0,
+        ],
+        borderColor: getRandomColor(),
+        backgroundColor: 'rgba(0, 0, 0, 0)', // 투명한 배경
+        fill: false
+    }));
+
+    const chartData = {
+        labels: ['Answer 1', 'Answer 3', 'Answer 4'],
+        datasets: emotionData
+    };
+
+    const options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top'
+            }
+        }
+    };
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    return (
+        <div style={{height: '100vh', overflowY: 'auto'}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
+                이 기간 동안 {user_name} 님의 감정 SOS를 알려드려요
+            </div>
+            <Line data={chartData} options={options} />
+            <div style={{width: "100%", height: "10%", fontSize: "1em", marginBottom: "5%", color: "#C6C6C6", paddingLeft: "10%", paddingRight: "10%", marginTop:"5%"}}>
+                이 그래프는 {user_name} 님의 부정적 감정 상태를 나타냅니다.
+                스트레스, 불안, 슬픔, 피로와 같은 감정들이 정상 범위 기준선인 200점 아래이며, 이는 여행이 {user_name} 님께 긍정적인 영향을 미쳤음을 시사합니다.
+            </div>
+        </div>
+    );
+}
+
+export function Fourth({data, page, update}) {
+    const user_name = localStorage.getItem("name") || "Default User";
+
+    // Big Five 데이터 집계
+    const bigFiveData = {
+        openness: [],
+        conscientiousness: [],
+        extroversion: [],
+        agreeableness: [],
+        neuroticism: []
+    };
+
+    // 모든 answer의 점수 합산
+    Object.keys(data.big_5).forEach(answerKey => {
+        const answer = data.big_5[answerKey];
+        bigFiveData.openness.push(answer["openness"]);
+        bigFiveData.conscientiousness.push(answer["sincerity"]); // sincerity를 conscientiousness의 대응값으로 가정
+        bigFiveData.extroversion.push(answer["extroversion"]);
+        bigFiveData.agreeableness.push(answer["friendliness"]); // friendliness를 agreeableness의 대응값으로 가정
+        bigFiveData.neuroticism.push(answer["neuroticism"]);
+    });
+
+    // 점수 평균 계산
+    const bigFiveAverages = Object.fromEntries(
+        Object.entries(bigFiveData).map(([key, values]) => {
+            const sum = values.reduce((a, b) => a + b, 0);
+            return [key, sum / values.length];
+        })
+    );
+
+    // 차트 데이터 설정
+    const chartData = {
+        labels: Object.keys(bigFiveAverages),
+        datasets: [{
+            label: `${user_name}의 Big Five 성격 특성`,
+            data: Object.values(bigFiveAverages),
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    return (
+        <div style={{height: '100vh', overflowY: 'auto'}}>
+            <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
+                블로그를 작성할 당시 {user_name} 님은 이런 모습이었어요.
+            </div>
+            <Radar data={chartData} />
+            <div style={{
+                width: "100%",
+                height: "10%",
+                fontSize: "1em",
+                marginBottom: "5%",
+                color: "#C6C6C6",
+                paddingLeft: "10%",
+                paddingRight: "10%",
+                marginTop:"5%"
+            }}>
+                Big 5 점수 설명 - 지피티 설명 값 필요
+            </div>
+        </div>
+    );
+}
+
+export function Fifth({ data }) {
+    const user_name = localStorage.getItem("name") || "Default User";
+    const ref = useRef();
+
+    useEffect(() => {
+        if (!ref.current) {
+            return;
+        }
+
+        const wordsMap = {};
+        // 모든 answer 항목에서 단어 및 점수 집계
+        Object.values(data.happy_keyword).forEach((item) => {
+            Object.entries(item).forEach(([word, score]) => {
+                if (wordsMap[word]) {
+                    wordsMap[word] += score;
+                } else {
+                    wordsMap[word] = score;
+                }
+            });
+        });
+
+        // 워드 클라우드 라이브러리에 맞는 형태로 데이터 변환
+        const words = Object.keys(wordsMap).map((text) => ({
+            text,
+            size: wordsMap[text], // 단어의 크기를 점수에 비례하게 설정
+        }));
+
+        // 워드 클라우드 레이아웃 설정 및 렌더링
+        const layout = cloud()
+            .size([800, 400])
+            .words(words)
+            .padding(5)
+            .rotate(() => 0)
+            .fontSize((d) => d.size)
+            .on("end", (renderedWords) => {
+                d3.select(ref.current)
+                    .attr("viewBox", `0 0 800 400`)
+                    .attr("width", "100%")
+                    .attr("height", "100%")
+                    .append("g")
+                    .attr("transform", "translate(400,200)")
+                    .selectAll("text")
+                    .data(renderedWords)
+                    .enter()
+                    .append("text")
+                    .style("font-size", (d) => `${d.size}px`)
+                    .style("fill", () => `hsl(${Math.random() * 360},100%,50%)`)
+                    .attr("text-anchor", "middle")
+                    .attr("transform", (d) => `translate(${[d.x, d.y]})`)
+                    .text((d) => d.text);
+            });
+
+        layout.start();
+    }, [data]); // data가 변경될 때마다 effect를 재실행
+
+    return (
+        <div style={{
+            height: '100vh',
+            overflowY: 'auto',
+            scrollbarWidth: 'none',
+            '-ms-overflow-style': 'none',
+            '&::-webkit-scrollbar': {
+                display: 'none'
+            }
+        }}>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                이 기간 동안 {user_name} 님을 행복하게 만든 것을 모아봤어요
+            </div>
+            <svg ref={ref} />
+        </div>
+    );
+}
+
+export function Six({data, page, update}){
+    const final_summary = data["solution"]
+
+    const user_name =localStorage.getItem("name");
     return (
         <div style={{
             height: '100vh',
@@ -304,155 +611,7 @@ export function Second({answer, page, update}) {
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.5em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                이 기간 동안 username 님의
-                감정곡선을 보여드려요
-            </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
-            </div>
-            <div style={{
-                width: "100%",
-                height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
-                paddingLeft: "10%",
-                paddingRight: "10%",
-                marginTop:"5%"
-            }}>
-                username 님은 여행 일자에 따라 행복, 만족감, 기쁨의 지수가 점차 증가합니다.
-                반면 우울감 지수는 낮아지며, 이는 여행이 긍정적인 경험 이었음을 시사합니다.
-            </div>
-        </div>
-    )
-}
-
-export function Third({answer, page, update}) {
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
-
-    return (
-        <div style={{
-            height: '100vh',
-            overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
-            scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
-            '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
-            '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
-                display: 'none'
-            }// 스크롤을 허용하는 부분
-        }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                이 기간 동안 username 님의
-                감정 SOS를 알려드려요
-            </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
-            </div>
-            <div style={{
-                width: "100%",
-                height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
-                paddingLeft: "10%",
-                paddingRight: "10%",
-                marginTop:"5%"
-            }}>
-                이 그래프는 username 님의 부정적 감정 상태를 나타냅니다.
-                스트레스, 불안, 슬픔, 피로와 같은 감정들이 정상 범위 기준선인 200점 아래이며, 이는 여행이 username 님께 긍정적인 영향을 미쳤음을 시사합니다.
-            </div>
-        </div>
-    )
-}
-
-export function Fourth({answer, page, update}) {
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
-
-    return (
-        <div style={{
-            height: '100vh',
-            overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
-            scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
-            '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
-            '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
-                display: 'none'
-            }// 스크롤을 허용하는 부분
-        }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                블로그를 작성할 당시
-                username 님은 이런 모습이었어요.
-            </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
-            </div>
-            <div style={{
-                width: "100%",
-                height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
-                paddingLeft: "10%",
-                paddingRight: "10%",
-                marginTop:"5%"
-            }}>
-                Big 5 점수 설명
-                </div>
-        </div>
-    )
-}
-
-export function Fifth({answer, page, update}){
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
-
-    return (
-        <div style={{
-            height: '100vh',
-            overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
-            scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
-            '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
-            '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
-                display: 'none'
-            }// 스크롤을 허용하는 부분
-        }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                이 기간 동안 username 님을
-                행복하게 만든 것을 모아봤어요
-            </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
-            </div>
-            <div style={{
-                width: "100%",
-                height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
-                paddingLeft: "10%",
-                paddingRight: "10%",
-                marginTop:"5%"
-            }}>
-                </div>
-        </div>
-    )
-}
-export function Six({answer, page, update}){
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
-
-    return (
-        <div style={{
-            height: '100vh',
-            overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
-            scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
-            '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
-            '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
-                display: 'none'
-            }// 스크롤을 허용하는 부분
-        }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                username 님의
+                {user_name} 님의
                 iGeport 감정 분석 솔루션은
             </div>
             <div style={{
@@ -465,10 +624,7 @@ export function Six({answer, page, update}){
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Lorem ipsum dolor sit amet consectetur. Amet pharetra consequat diam numc eget accumsan fermentum enim quam.
-                Convallis scelerisque pellentesque mi commodo in.
-                Nulla nunc cursus ullamcorper amet aliquam diam turpis tempus nunc. Faucibus venenatis neque morbi amet leo diam.
-
+                {final_summary}
             </div>
         </div>
     )
