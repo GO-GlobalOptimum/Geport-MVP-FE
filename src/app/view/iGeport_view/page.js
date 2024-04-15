@@ -225,17 +225,18 @@ export function Information() {
 
 export function First({ data, page, update}){
     // data 객체에서 바로 필요한 부분에 접근
-    if (!data || !data["blog_summarys"]) {
+    if (!data) {
         return <div>Loading or data not available...</div>; // 데이터 확인 로직 추가
     }
 
     const user_name = localStorage.getItem("name") || "Default User"; // 사용자 이름 가져오기, 기본값 설정
+    const blogData = JSON.parse(data["answer_1"]);
 
-    // blog_summarys에서 직접 각 일자의 데이터를 접근
-    const day1 = data["blog_summarys"]["1st"];
-    const day2 = data["blog_summarys"]["2nd"];
-    const day3 = data["blog_summarys"]["3rd"];
-    const day4 = data["blog_summarys"]["4th"];
+// 파싱된 객체에서 각 블로그 데이터에 접근
+    const day1 = blogData["blog_1"];
+    const day2 = blogData["blog_2"];
+    const day3 = blogData["blog_3"];
+    const day4 = blogData["blog_4"];
 
     return (
         <div style={{
@@ -254,15 +255,15 @@ export function First({ data, page, update}){
                 {user_name} 님의 블로그를 분석했어요
             </div>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.2em",
+                width: "100%", height: "1.2em", fontSize: "1.2em",
                 marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 1일차
             </div>
             <div style={{
                 width: "100%",
-                height: "10%",
-                fontSize: "1em",
+                height: "15%",
+                fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
@@ -272,15 +273,15 @@ export function First({ data, page, update}){
                 {day1}
             </div>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.2em",
+                width: "100%", height: "1.2em", fontSize: "1.2em",
                 marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 2일차
             </div>
             <div style={{
                 width: "100%",
-                height: "10%",
-                fontSize: "1em",
+                height: "15%",
+                fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
@@ -290,15 +291,15 @@ export function First({ data, page, update}){
                 {day2}
             </div>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.2em",
+                width: "100%", height: "1.2em", fontSize: "1.2em",
                 marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 3일차
             </div>
             <div style={{
                 width: "100%",
-                height: "10%",
-                fontSize: "1em",
+                height: "15%",
+                fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
@@ -308,15 +309,15 @@ export function First({ data, page, update}){
                 {day3}
             </div>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.2em",
+                width: "100%", height: "1.2em", fontSize: "1.2em",
                 marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 4일차
             </div>
             <div style={{
                 width: "100%",
-                height: "10%",
-                fontSize: "1em",
+                height: "15%",
+                fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
@@ -340,27 +341,37 @@ ChartJS.register(
     Legend
 );
 
-
 export function Second({data, page, update}) {
     const user_name = localStorage.getItem("name") || "Default User";
 
-    // 데이터에서 감정별로 시간에 따른 변화 추출
-    const emotions = ['happy', 'joy', 'anxious',
-        'depressed', 'anger', 'sadness'];
-    const emotionData = emotions.map(emotion => ({
-        label: emotion,
+    // 'answer_2' 문자열을 JSON 객체로 파싱
+    const blogData = JSON.parse(data["answer_2"]);
+
+    // 정의된 감정별 키와 이에 대응하는 라벨
+    const emotions = [
+        { key: 'happiness', label: 'Happy' },
+        { key: 'joy', label: 'Joy' },
+        { key: 'anxiousness', label: 'Anxious' },
+        { key: 'depression', label: 'Depressed' },
+        { key: 'anger', label: 'Anger' },
+        { key: 'sadness', label: 'Sadness' }
+    ];
+
+    // 각 감정별로 시간에 따른 변화 데이터 추출
+    const emotionData = emotions.map(({ key, label }) => ({
+        label: label,
         data: [
-            data["emotions_wave"]["answer_1"][emotion],
-            data["emotions_wave"]["answer_2"][emotion],
-            data["emotions_wave"]["answer_3"][emotion],
-            data["emotions_wave"]["answer_4"][emotion]
+            blogData["blog_1"]["emotions"][key],
+            blogData["blog_2"]["emotions"][key],
+            blogData["blog_3"]["emotions"][key],
+            blogData["blog_4"]["emotions"][key]
         ],
         borderColor: getRandomColor(),
         fill: false
     }));
 
     const chartData = {
-        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4'], // 시간 순서
+        labels: ['Blog 1', 'Blog 2', 'Blog 3', 'Blog 4'], // 블로그 순서
         datasets: emotionData
     };
 
@@ -373,6 +384,21 @@ export function Second({data, page, update}) {
         plugins: {
             legend: {
                 position: 'top'
+            },
+            tooltip: {
+                callbacks: {
+                    afterBody: function(context) {
+                        // Tooltip에 내용 추가
+                        const blogIndex = context[0].dataIndex;
+                        const contentTexts = [
+                            blogData["blog_1"]["contents"],
+                            blogData["blog_2"]["contents"],
+                            blogData["blog_3"]["contents"],
+                            blogData["blog_4"]["contents"]
+                        ];
+                        return contentTexts[blogIndex];
+                    }
+                }
             }
         }
     };
@@ -397,29 +423,33 @@ export function Second({data, page, update}) {
     );
 }
 
+import { Chart, registerables } from 'chart.js';   // Chart.js와 registerables 가져오기
+Chart.register(...registerables);                 // 모든 차트 유형, 스케일, 플러그인 등을 등록
+
+import { Bar } from 'react-chartjs-2';            // Bar 차트 컴포넌트 가져오기
+// Bar 차트를 사용하기 위해 import합니다.
+
 export function Third({data, page, update}) {
     const user_name = localStorage.getItem("name") || "Default User";
 
-    // 데이터 구조에서 감정 SOS 점수 추출
-    const emotions = ['sadness', 'anger', 'depressed', 'anxious'];
-    const emotionData = emotions.map(emotion => ({
-        label: emotion,
-        data: [
-            data.emotions_sos.answer1 ? data.emotions_sos.answer1[emotion] : 0,
-            data.emotions_sos.answer3 ? data.emotions_sos.answer3[emotion] : 0,
-            data.emotions_sos.answer4 ? data.emotions_sos.answer4[emotion] : 0,
-        ],
-        borderColor: getRandomColor(),
-        backgroundColor: 'rgba(0, 0, 0, 0)', // 투명한 배경
-        fill: false
-    }));
+    // answer_3 데이터 파싱
+    const answer3Data = data.answer3 ? JSON.parse(data.answer3) : { emotions: { sadness: 0, anger: 0, depressed: 0, anxious: 0 }, explanation: "No data available." };
 
-    const chartData = {
-        labels: ['Answer 1', 'Answer 3', 'Answer 4'],
-        datasets: emotionData
+    // 감정 데이터와 설명 추출
+    const emotions = ['sadness', 'anger', 'depressed', 'anxious'];
+    const emotionValues = emotions.map(emotion => answer3Data.emotions[emotion]);
+    const emotionData = {
+        labels: emotions,
+        datasets: [{
+            label: 'Emotion Levels',
+            data: emotionValues,
+            backgroundColor: emotions.map(() => getRandomColor()), // 각 감정별 다른 색상
+            borderColor: emotions.map(() => '#000000'), // 검은색 테두리
+            borderWidth: 1
+        }]
     };
 
-    const options = {
+    const chartOptions = {
         scales: {
             y: {
                 beginAtZero: true
@@ -444,12 +474,11 @@ export function Third({data, page, update}) {
     return (
         <div style={{height: '100vh', overflowY: 'auto'}}>
             <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
-                이 기간 동안 {user_name} 님의 감정 SOS를 알려드려요
+                이 기간 동안 {user_name} 님의 감정 변화를 보여드려요
             </div>
-            <Line data={chartData} options={options} />
+            <Bar data={emotionData} options={chartOptions} />
             <div style={{width: "100%", height: "10%", fontSize: "1em", marginBottom: "5%", color: "#C6C6C6", paddingLeft: "10%", paddingRight: "10%", marginTop:"5%"}}>
-                이 그래프는 {user_name} 님의 부정적 감정 상태를 나타냅니다.
-                스트레스, 불안, 슬픔, 피로와 같은 감정들이 정상 범위 기준선인 200점 아래이며, 이는 여행이 {user_name} 님께 긍정적인 영향을 미쳤음을 시사합니다.
+                {answer3Data.explanation}
             </div>
         </div>
     );
@@ -596,8 +625,9 @@ export function Fifth({ data }) {
 }
 
 export function Six({data, page, update}){
-    const final_summary = data["solution"]
-
+    const final_summary = data["answer_6"]
+    const summary = final_summary["summary"]
+    const advice = final_summary["advice"]
     const user_name =localStorage.getItem("name");
     return (
         <div style={{
@@ -624,7 +654,9 @@ export function Six({data, page, update}){
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                {final_summary}
+                {summary}
+                <br/>
+                {advice}
             </div>
         </div>
     )
