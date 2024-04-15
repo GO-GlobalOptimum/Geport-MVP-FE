@@ -1,8 +1,9 @@
 "use client"
 import {useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
+import {useEffect, useRef,useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 import Image from "next/image";
+import Chart from 'chart.js/auto';
 
 export default function Geport_view(){
     const router = useRouter();
@@ -12,6 +13,7 @@ export default function Geport_view(){
     const [answer, setAnswer] = useState([
         {id : 1, content: ""}, {id : 2, content: ""}, {id : 3, content: ""}, {id : 4, content: ""}, {id : 5, content: ""}
     ]);
+    const [data, setData] = useState({});
 
     useEffect(() => {
         const data = {
@@ -25,6 +27,8 @@ export default function Geport_view(){
             "questions": JSON.parse(localStorage.getItem("geport-answer"))
         }
 
+        console.log(data)
+
         const options = {
             method: 'POST',
             headers: {
@@ -33,19 +37,26 @@ export default function Geport_view(){
             body: JSON.stringify(data)
         };
 
-        fetch('/api/geport/create', options)
+        fetch(`/api/geport/create`, options)
             .then(res => {
                 console.log('Server response:', res);
                 return res.json();
             })
             .then(result => {
                 console.log('Processed result:', result);
-                setLoading(false);
+
+            fetch(`/api/geport/generate-test/${result.encrypted_id}`, {method:"GET"})
+                    .then(res=>{
+                        return res.json()
+                    })
+                    .then(result=>{
+                        console.log(result)
+                        setData(result);
+                        setLoading(false);
+                    })
             }).catch(error => {
             console.error('Error handling in promise:', error);
         });
-
-
 
     }, []); // This effect runs only once when the component mounts
 
@@ -65,27 +76,27 @@ export default function Geport_view(){
         switch (page){
             case 1:
                 return (
-                    <First answer={answer} page={page} update={update}/>
+                    <First data={data}/>
                 )
             case 2:
                 return (
-                    <Second answer={answer} page={page} update={update}/>
+                    <Second data={data}/>
                 )
             case 3:
                 return (
-                    <Third answer={answer} page={page} update={update}/>
+                    <Third data={data}/>
                 )
             case 4:
                 return (
-                    <Fourth answer={answer} page={page} update={update}/>
+                    <Fourth data={data}/>
                 )
             case 5:
                 return (
-                    <Fifth answer={answer} page={page} update={update}/>
+                    <Fifth data={data}/>
                 )
             default:
                 return(
-                    <Information/>
+                    <Information data={data}/>
                 )
         }
     }
@@ -167,14 +178,14 @@ export default function Geport_view(){
     )
 }
 
-export function Information() {
+export function Information({data}) {
     return (
         <div style={{
             height: '100vh'
         }}>
             <div style={{width: "100%", height: "15%", fontSize: "1.6em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                (소개글 한 문장), Username 님의 Geport
+                {localStorage.getItem('bio')}, {localStorage.getItem('name')} 님의 Geport
             </div>
             <div style={{
                 width: "100%",
@@ -186,15 +197,14 @@ export function Information() {
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Username 님의 블로글와 답변을 바탕으로
+                {localStorage.getItem('name')} 님의 블로글와 답변을 바탕으로
                 퍼스널 브랜딩에 필요한 분석 솔루션을 준비했어요
             </div>
         </div>
     )
 }
 
-export function First({answer, page, update}){
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+export function First({data}){
 
     return (
         <div style={{
@@ -208,7 +218,7 @@ export function First({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.5em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                Username 님은 이런 사람이 되고 싶어해요
+                {localStorage.getItem('name')} 님은 이런 사람이 되고 싶어해요
             </div>
             <div style={{
                 width: "100%",
@@ -220,14 +230,13 @@ export function First({answer, page, update}){
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Lorem ipsum dolor sit amet consectetur. Amet pharetra consequat diam nunc eget accumsan fermentum enim quam. Convallis scelerisque pellentesque mi commodo in. Nulla nunc cursus ullamcorper amet aliquam diam turpis tempus nunc. Faucibus venenatis neque morbi amet leo diam.
+                {data.result["저는 이런 사람이 되고싶어요"]}
             </div>
         </div>
     )
 }
 
-export function Second({answer, page, update}) {
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+export function Second({data}) {
 
     return (
         <div style={{
@@ -241,7 +250,7 @@ export function Second({answer, page, update}) {
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.5em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                Username 님의 좌우명을
+                {localStorage.getItem('name')} 님의 좌우명을
                 Geport가 분석했어요
             </div>
             <div style={{
@@ -254,14 +263,13 @@ export function Second({answer, page, update}) {
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Lorem ipsum dolor sit amet consectetur. Amet pharetra consequat diam nunc eget accumsan fermentum enim quam. Convallis scelerisque pellentesque mi commodo in. Nulla nunc cursus ullamcorper amet aliquam diam turpis tempus nunc. Faucibus venenatis neque morbi amet leo diam.
+                {data.result["저의 좌우명은 다음과 같습니다 "]}
             </div>
         </div>
     )
 }
 
-export function Third({answer, page, update}) {
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+export function Third({data}) {
 
     return (
         <div style={{
@@ -275,8 +283,8 @@ export function Third({answer, page, update}) {
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.5em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                이 기간 동안 username 님의
-                감정 SOS를 알려드려요
+                {localStorage.getItem('name')} 님의
+                인생의 변곡접은 이겁니다.
             </div>
             <div style={{
                 width: "100%",
@@ -288,43 +296,77 @@ export function Third({answer, page, update}) {
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Lorem ipsum dolor sit amet consectetur. Amet pharetra consequat diam nunc eget accumsan fermentum enim quam. Convallis scelerisque pellentesque mi commodo in. Nulla nunc cursus ullamcorper amet aliquam diam turpis tempus nunc. Faucibus venenatis neque morbi amet leo diam.</div>
+                {data.result["제 인생의 변곡점은 다음과 같아요"]}
+            </div>
         </div>
     )
 }
 
-export function Fourth({answer, page, update}) {
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+export function Fourth({ data }) {
+    const chartRef = useRef(null);
+    const chartInstance = useRef(null);
+
+    useEffect(() => {
+        if (chartRef.current && data) {  // 차트 생성 조건 확인
+            const ctx = chartRef.current.getContext('2d');
+            if (chartInstance.current) {
+                chartInstance.current.destroy();  // 기존 차트 인스턴스 제거
+            }
+            chartInstance.current = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 21}, (_, i) => i - 10),
+                    datasets: [{
+                        label: data.result["이것이 재 인생 함수입니다"]["equation"],
+                        data: Array.from({length: 21}, (_, i) => -(i - 10)),
+                        borderColor: 'red',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        // 컴포넌트 언마운트 시 차트 인스턴스 제거
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data]); // data가 변경될 때마다 차트 업데이트
 
     return (
-        <div style={{
-            height: '100vh'
-        }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                Username 님의 삶을 그래프로 표현했어요
+        <div style={{ height: '100vh' }}>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                {localStorage.getItem('name')} 님의 삶을 그래프로 표현했어요
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Image src={"/image/거북이랑 수영을.png"} width={400} height={100} alt={"logo"}/>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <canvas ref={chartRef} width="50%" height="50%"></canvas>
             </div>
             <div style={{
-                width: "100%",
-                height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
-                paddingLeft: "10%",
-                paddingRight: "10%",
-                marginTop:"5%"
+                width: "100%", height: "10%", fontSize: "1em", marginBottom: "5%", color: "#C6C6C6",
+                paddingLeft: "10%", paddingRight: "10%", marginTop: "5%"
             }}>
-                Lorem ipsum dolor sit amet consectetur. Amet pharetra consequat diam nunc eget accumsan fermentum enim quam.
+                {data.result["이것이 재 인생 함수입니다"]}
             </div>
         </div>
-    )
+    );
 }
 
-export function Fifth({answer, page, update}){
-    const myContent = answer.find(ans => ans.id === page)?.content || "";
+
+export function Fifth({data}){
 
     return (
         <div style={{
@@ -338,7 +380,8 @@ export function Fifth({answer, page, update}){
         }}>
             <div style={{width: "100%", height: "10%", fontSize: "1.5em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                Username 님의 Geport 퍼스널 브랜딩 솔루션은
+                {localStorage.getItem('name')} 님의 Geport 퍼스널 브랜딩 솔루션은
+                다음과 같습니다.
             </div>
             <div style={{
                 width: "100%",
@@ -350,7 +393,7 @@ export function Fifth({answer, page, update}){
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                Lorem ipsum dolor sit amet consectetur. Amet pharetra consequat diam nunc eget accumsan fermentum enim quam. Convallis scelerisque pellentesque mi commodo in. Nulla nunc cursus ullamcorper amet aliquam diam turpis tempus nunc. Faucibus venenatis neque morbi amet leo diam.
+                {data.result["Geport Solution"]}
             </div>
         </div>
     )
@@ -366,7 +409,7 @@ export function LoadingScreen() {
             <div style={{ marginTop: '30px', textAlign: 'center' }}>
                 <span style={{ color: "#A8A8A8" }}>작성하신 블로그를 바탕으로</span>
                 <br />
-                <span style={{ color: "#A8A8A8" }}>퍼스널 브랜딩 솔루션을 만들어 드립니다.</span>
+                <span style={{ color: "#A8A8A8" }}>퍼스널 브랜딩 솔루션을 만들고 있습니다...</span>
             </div>
         </div>
     )
