@@ -165,7 +165,7 @@ export default function Geport_view(){
                          onClick={() => {
                              if (paging > 4) {
                                  router.refresh();
-                                 router.push('/hidden-code');
+                                 router.push('/');
                              }
                              else {
                                  setPaging(prev => prev + 1)
@@ -288,7 +288,7 @@ export function Third({data}) {
             <div style={{width: "100%", height: "10%", fontSize: "1.5em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
                 {localStorage.getItem('name')} 님의
-                인생의 변곡접은 이겁니다.
+                인생의 변곡점은 이겁니다.
             </div>
             <div style={{
                 width: "100%",
@@ -339,11 +339,20 @@ export function Fourth({ data }) {
                 },
                 options: {
                     scales: {
-                        yAxes: [{
+                        x: { // X축 설정
+                            beginAtZero: true,
+                            min: 0, // X축의 최소값을 0으로 설정
                             ticks: {
-                                beginAtZero: true
+                                stepSize: 1 // X축 간격을 1로 설정
                             }
-                        }]
+                        },
+                        y: { // Y축 설정
+                            beginAtZero: true,
+                            min: 0, // Y축의 최소값을 0으로 설정
+                            ticks: {
+                                stepSize: 1 // Y축 간격을 1로 설정
+                            }
+                        }
                     }
                 }
             });
