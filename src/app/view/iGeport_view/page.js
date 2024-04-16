@@ -372,7 +372,19 @@ export function Second({data}) {
             blogData["blog_4"]["emotions"][key]
         ],
         borderColor: getRandomColor(),
-        tension: 0.1
+        tension: 0.1,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            elements: {
+                line: {
+                    fill: true // Make sure lines are filled
+                }
+            }
+        }
     }));
 
     const chartData = {
@@ -625,6 +637,13 @@ export function Fifth({data}) {
                     afterBody: function(context) {
                         return descriptions[context.dataIndex];  // Display personality trait descriptions
                     }
+                }
+            }
+        },
+        options: {
+            elements: {
+                line: {
+                    fill: true // Make sure lines are filled
                 }
             }
         }
