@@ -1,13 +1,15 @@
 "use client"
 import {useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
-import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
+import {useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import * as d3 from 'd3';
-import cloud from 'd3-cloud';
-import { Radar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
+import Wordcloud from '@visx/wordcloud/lib/Wordcloud';
+import { Text } from '@visx/text';
+import { scaleSqrt } from '@visx/scale'; // Make sure this import is included
+
+
 
 export default function iGeport_view(){
     const router = useRouter();
@@ -30,7 +32,6 @@ export default function iGeport_view(){
             "blog_links": JSON.parse(localStorage.getItem("igeport-link")),
             "questions": JSON.parse(localStorage.getItem("igeport-answer"))
         }
-        const name = data['name'];
 
         console.log(data)
         const options = {
@@ -223,7 +224,7 @@ export function Information() {
     )
 }
 
-export function First({ data, page, update}){
+export function First({ data}){
     // data 객체에서 바로 필요한 부분에 접근
     if (!data) {
         return <div>Loading or data not available...</div>; // 데이터 확인 로직 추가
@@ -246,11 +247,11 @@ export function First({ data, page, update}){
             '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
             '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
                 display: 'none'
-            }// 스크롤을 허용하는 부분
+            }
         }}>
             <div style={{
                 width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+                marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 {user_name} 님의 블로그를 분석했어요
             </div>
@@ -262,13 +263,13 @@ export function First({ data, page, update}){
             </div>
             <div style={{
                 width: "100%",
-                height: "15%",
+                height: "12%",
                 fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop: "5%"
+                marginTop: "5%",overflowY:"auto"
             }}>
                 {day1}
             </div>
@@ -280,13 +281,13 @@ export function First({ data, page, update}){
             </div>
             <div style={{
                 width: "100%",
-                height: "15%",
+                height: "12%",
                 fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop: "5%"
+                marginTop: "5%", overflowY:"auto"
             }}>
                 {day2}
             </div>
@@ -298,13 +299,13 @@ export function First({ data, page, update}){
             </div>
             <div style={{
                 width: "100%",
-                height: "15%",
+                height: "12%",
                 fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop: "5%"
+                marginTop: "5%", overflowY:"auto"
             }}>
                 {day3}
             </div>
@@ -316,13 +317,13 @@ export function First({ data, page, update}){
             </div>
             <div style={{
                 width: "100%",
-                height: "15%",
+                height: "12%",
                 fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop: "5%"
+                marginTop: "5%", overflowY:"auto"
             }}>
                 {day4}
             </div>
@@ -341,13 +342,18 @@ ChartJS.register(
     Legend
 );
 
-export function Second({data, page, update}) {
-    const user_name = localStorage.getItem("name") || "Default User";
+function getRandomColor() {
+    // Pastel colors are often represented with high saturation and lightness
+    const hue = Math.floor(Math.random() * 360); // Random hue from 0 to 359
+    const saturation = Math.floor(Math.random() * 26) + 70; // Saturation between 70% and 95%
+    const lightness = Math.floor(Math.random() * 16) + 75; // Lightness between 75% and 90%
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
 
-    // 'answer_2' 문자열을 JSON 객체로 파싱
+export function Second({data}) {
+    const user_name = localStorage.getItem("name") || "Default User";
     const blogData = JSON.parse(data["answer_2"]);
 
-    // 정의된 감정별 키와 이에 대응하는 라벨
     const emotions = [
         { key: 'happiness', label: 'Happy' },
         { key: 'joy', label: 'Joy' },
@@ -357,7 +363,6 @@ export function Second({data, page, update}) {
         { key: 'sadness', label: 'Sadness' }
     ];
 
-    // 각 감정별로 시간에 따른 변화 데이터 추출
     const emotionData = emotions.map(({ key, label }) => ({
         label: label,
         data: [
@@ -367,11 +372,11 @@ export function Second({data, page, update}) {
             blogData["blog_4"]["emotions"][key]
         ],
         borderColor: getRandomColor(),
-        fill: false
+        fill: true, tension: 0.1
     }));
 
     const chartData = {
-        labels: ['Blog 1', 'Blog 2', 'Blog 3', 'Blog 4'], // 블로그 순서
+        labels: ['Blog 1', 'Blog 2', 'Blog 3', 'Blog 4'],
         datasets: emotionData
     };
 
@@ -383,57 +388,74 @@ export function Second({data, page, update}) {
         },
         plugins: {
             legend: {
-                position: 'top'
+                position: 'bottom'
             },
             tooltip: {
                 callbacks: {
                     afterBody: function(context) {
-                        // Tooltip에 내용 추가
                         const blogIndex = context[0].dataIndex;
-                        const contentTexts = [
+                        return [
                             blogData["blog_1"]["contents"],
                             blogData["blog_2"]["contents"],
                             blogData["blog_3"]["contents"],
-                            blogData["blog_4"]["contents"]
-                        ];
-                        return contentTexts[blogIndex];
+                            blogData["blog_4"]["contents"],
+                        ][blogIndex];
                     }
                 }
             }
         }
     };
 
-    // 색상을 무작위로 생성하는 함수
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
+    /*
+    *
+                width: "100%", height: "1.2em", fontSize: "1.2em",
+                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
+    * */
 
     return (
-        <div style={{height: '100vh', overflowY: 'auto'}}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
+        <div style={{
+            height: '100vh',
+            overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
+            scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
+            '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
+            '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
+                display: 'none'
+            }}}>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.5em",
+                marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"}}>
                 이 기간 동안 {user_name} 님의 감정 변화를 보여드려요
             </div>
-            <Line data={chartData} options={options} />
+            <Line data={chartData} options={options} style={{width: "100%", height: "40%"}} />
+            <div style={{
+                width: "100%", height: "10%", fontSize: "0.9em",
+                marginBottom: "3%", paddingLeft: "10%", paddingRight: "10%", color:"#C6C6C6"}}>
+                <div style={{fontSize: "1.1rem"}}>1일차</div>
+                {blogData["blog_1"]["contents"]}
+                <div style={{fontSize: "1.1rem"}}>2일차</div>
+                {blogData["blog_2"]["contents"]}
+                <div style={{fontSize: "1.1rem"}}>3일차</div>
+                {blogData["blog_3"]["contents"]}
+                <div style={{fontSize: "1.1rem"}}>4일차</div>
+                {blogData["blog_4"]["contents"]}
+            </div>
         </div>
     );
 }
 
-import { Chart, registerables } from 'chart.js';   // Chart.js와 registerables 가져오기
+import {Chart, registerables} from 'chart.js';   // Chart.js와 registerables 가져오기
 Chart.register(...registerables);                 // 모든 차트 유형, 스케일, 플러그인 등을 등록
+          // Bar 차트 컴포넌트 가져오기
 
-import { Bar } from 'react-chartjs-2';            // Bar 차트 컴포넌트 가져오기
-// Bar 차트를 사용하기 위해 import합니다.
 
-export function Third({data, page, update}) {
+export function Third({data}) {
     const user_name = localStorage.getItem("name") || "Default User";
 
     // answer_3 데이터 파싱
-    const answer3Data = data.answer3 ? JSON.parse(data.answer3) : { emotions: { sadness: 0, anger: 0, depressed: 0, anxious: 0 }, explanation: "No data available." };
+    const answer3Data = data ? JSON.parse(data["answer_3"]) : {
+        emotions: { sadness: 0, anger: 0, depressed: 0, anxious: 0 },
+        contents: "No data available." // 기본값 설정을 추가
+    };
 
     // 감정 데이터와 설명 추출
     const emotions = ['sadness', 'anger', 'depressed', 'anxious'];
@@ -457,151 +479,163 @@ export function Third({data, page, update}) {
         },
         plugins: {
             legend: {
-                position: 'top'
+                position: 'bottom'
             }
         }
     };
 
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
     return (
-        <div style={{height: '100vh', overflowY: 'auto'}}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
+        <div style={{
+                height: '100vh',
+                overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
+                scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
+                '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
+                '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
+                    display: 'none'}}}>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "1.2em",
+                marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"}}>
                 이 기간 동안 {user_name} 님의 감정 변화를 보여드려요
             </div>
-            <Bar data={emotionData} options={chartOptions} />
-            <div style={{width: "100%", height: "10%", fontSize: "1em", marginBottom: "5%", color: "#C6C6C6", paddingLeft: "10%", paddingRight: "10%", marginTop:"5%"}}>
-                {answer3Data.explanation}
+            <Bar data={emotionData} options={chartOptions} style={{width:"85%"}} />
+            <div style={{
+                width: "100%", height: "10%", fontSize: "0.8em",
+                marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%", color: "#C6C6C6"}}>
+                {answer3Data["contents"]}
             </div>
         </div>
     );
 }
-
-export function Fourth({data, page, update}) {
+function Fourth({data}) {
     const user_name = localStorage.getItem("name") || "Default User";
+    const containerRef = useRef(null);
+    const [size, setSize] = useState({ width: 0, height: 0 });
 
-    // Big Five 데이터 집계
-    const bigFiveData = {
-        openness: [],
-        conscientiousness: [],
-        extroversion: [],
-        agreeableness: [],
-        neuroticism: []
-    };
+    let happinessData = {};
+    try {
+        happinessData = JSON.parse(data["answer_4"]);
+    } catch (e) {
+        console.error("Error parsing data:", e);
+        return <div>Error loading data.</div>;
+    }
 
-    // 모든 answer의 점수 합산
-    Object.keys(data.big_5).forEach(answerKey => {
-        const answer = data.big_5[answerKey];
-        bigFiveData.openness.push(answer["openness"]);
-        bigFiveData.conscientiousness.push(answer["sincerity"]); // sincerity를 conscientiousness의 대응값으로 가정
-        bigFiveData.extroversion.push(answer["extroversion"]);
-        bigFiveData.agreeableness.push(answer["friendliness"]); // friendliness를 agreeableness의 대응값으로 가정
-        bigFiveData.neuroticism.push(answer["neuroticism"]);
+    const words = Object.entries(happinessData).map(([key, value]) => ({
+        text: key,
+        value: value
+    }));
+    console.log(words)
+
+    // Simplified font scale to ensure visibility
+    const fontScale = scaleSqrt({
+        domain: [1, Math.max(...words.map(word => word.value))],
+        range: [20, 60]  // Ensuring all words are within a reasonable font size range
     });
 
-    // 점수 평균 계산
-    const bigFiveAverages = Object.fromEntries(
-        Object.entries(bigFiveData).map(([key, values]) => {
-            const sum = values.reduce((a, b) => a + b, 0);
-            return [key, sum / values.length];
-        })
-    );
+    const fontSizeSetter = word => fontScale(word.value);
 
-    // 차트 데이터 설정
+    useEffect(() => {
+        const updateSize = () => {
+            if (containerRef.current) {
+                const { width, height } = containerRef.current.getBoundingClientRect();
+                setSize({ width: width * 0.85, height: height * 0.5 });
+            }
+        };
+
+        window.addEventListener('resize', updateSize);
+        updateSize();
+        return () => window.removeEventListener('resize', updateSize);
+    }, []);
+
+    return (
+        <div ref={containerRef} style={{ height: '100vh', overflowY: 'auto' }}>
+            <div style={{ width: "85%", fontSize: "1.5em", marginBottom: "20px" }}>
+                이 기간 동안 {user_name} 님을 행복하게 한 것들을 모아봤어요.
+            </div>
+            {size.width && size.height && (
+                <Wordcloud
+                    words={words}
+                    width={size.width}
+                    height={size.height}
+                    fontSize={fontSizeSetter}
+                    font="Impact"
+                    padding={10}  // Consistent padding
+                    rotate={() => 10 || -10 || 30||-20}  // No rotation for simplicity
+                    spiral="archimedean"
+                    random={() => 0.5}  // Consistent randomness
+                >
+                    {cloudWords => cloudWords.map((word, i) => (
+                        <Text
+                            key={word.text}
+                            fill="#1AE57C"
+                            textAnchor="middle"
+                            transform={`translate(${word.x}, ${word.y}) rotate(${word.rotate})`}
+                            fontSize={word.size}
+                            fontFamily="Impact"
+                        >
+                            {word.text}
+                        </Text>
+                    ))}
+                </Wordcloud>
+            )}
+        </div>
+    );
+}
+
+export function Fifth({data}) {
+    const user_name = localStorage.getItem("name") || "Default User";
+
+    // Parse the 'answer_5' data
+    const personalityData = JSON.parse(data["answer_5"]);
+
+    // Map the personality traits data
+    const traits = [
+        { key: 'openness', label: 'Openness' },
+        { key: 'sincerity', label: 'Conscientiousness' },
+        { key: 'extroversion', label: 'Extroversion' },
+        { key: 'friendliness', label: 'Agreeableness' },
+        { key: 'neuroticism', label: 'Neuroticism' }
+    ];
+
+    const scores = traits.map(trait => personalityData[trait.key].score);
+    const descriptions = traits.map(trait => personalityData[trait.key].description);
+
     const chartData = {
-        labels: Object.keys(bigFiveAverages),
+        labels: traits.map(trait => trait.label),
         datasets: [{
-            label: `${user_name}의 Big Five 성격 특성`,
-            data: Object.values(bigFiveAverages),
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
+            label: `${user_name} 님의 Big 5`,
+            data: scores,
+            fill: true,
+            borderColor: getRandomColor(),
+            tension: 0.1
         }]
     };
 
-    return (
-        <div style={{height: '100vh', overflowY: 'auto'}}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em", marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"}}>
-                블로그를 작성할 당시 {user_name} 님은 이런 모습이었어요.
-            </div>
-            <Radar data={chartData} />
-            <div style={{
-                width: "100%",
-                height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
-                paddingLeft: "10%",
-                paddingRight: "10%",
-                marginTop:"5%"
-            }}>
-                Big 5 점수 설명 - 지피티 설명 값 필요
-            </div>
-        </div>
-    );
-}
-
-export function Fifth({ data }) {
-    const user_name = localStorage.getItem("name") || "Default User";
-    const ref = useRef();
-
-    useEffect(() => {
-        if (!ref.current) {
-            return;
-        }
-
-        const wordsMap = {};
-        // 모든 answer 항목에서 단어 및 점수 집계
-        Object.values(data.happy_keyword).forEach((item) => {
-            Object.entries(item).forEach(([word, score]) => {
-                if (wordsMap[word]) {
-                    wordsMap[word] += score;
-                } else {
-                    wordsMap[word] = score;
+    const options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            },
+            x: {
+                ticks: {
+                    autoSkip: false,
+                    maxRotation: 0, // Ensure labels are not tilted
+                    minRotation: 0
                 }
-            });
-        });
-
-        // 워드 클라우드 라이브러리에 맞는 형태로 데이터 변환
-        const words = Object.keys(wordsMap).map((text) => ({
-            text,
-            size: wordsMap[text], // 단어의 크기를 점수에 비례하게 설정
-        }));
-
-        // 워드 클라우드 레이아웃 설정 및 렌더링
-        const layout = cloud()
-            .size([800, 400])
-            .words(words)
-            .padding(5)
-            .rotate(() => 0)
-            .fontSize((d) => d.size)
-            .on("end", (renderedWords) => {
-                d3.select(ref.current)
-                    .attr("viewBox", `0 0 800 400`)
-                    .attr("width", "100%")
-                    .attr("height", "100%")
-                    .append("g")
-                    .attr("transform", "translate(400,200)")
-                    .selectAll("text")
-                    .data(renderedWords)
-                    .enter()
-                    .append("text")
-                    .style("font-size", (d) => `${d.size}px`)
-                    .style("fill", () => `hsl(${Math.random() * 360},100%,50%)`)
-                    .attr("text-anchor", "middle")
-                    .attr("transform", (d) => `translate(${[d.x, d.y]})`)
-                    .text((d) => d.text);
-            });
-
-        layout.start();
-    }, [data]); // data가 변경될 때마다 effect를 재실행
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    afterBody: function(context) {
+                        return descriptions[context.dataIndex];  // Display personality trait descriptions
+                    }
+                }
+            }
+        }
+    };
 
     return (
         <div style={{
@@ -615,55 +649,93 @@ export function Fifth({ data }) {
         }}>
             <div style={{
                 width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"
+                marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"
             }}>
-                이 기간 동안 {user_name} 님을 행복하게 만든 것을 모아봤어요
+                이 기간 동안 {user_name} 님의 성격 특성을 분석합니다
             </div>
-            <svg ref={ref} />
+            <Line data={chartData} options={options} style={{width:"95%", height:"40%"}}/>
+            <div style={{
+                width: "100%", height: "10%", fontSize: "0.8em",
+                marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"
+            }}>
+                {traits.map((trait, index) => (
+                    <div key={index} style={{ marginBottom: "20px" }}>
+                        <div style={{ fontWeight: 'bold', fontSize: "1.1rem" }}>{trait.label} ({trait.key})</div>
+                        {personalityData[trait.key].description}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
 
-export function Six({data, page, update}){
-    const final_summary = data["answer_6"]
-    const summary = final_summary["summary"]
-    const advice = final_summary["advice"]
-    const user_name =localStorage.getItem("name");
+export function Six({data}) {
+    const user_name = localStorage.getItem("name") || "Default User";
+
+    // 'answer_5' 데이터 파싱
+    const finalData = JSON.parse(data["answer_6"]);
+    const summary = finalData["summary"];
+    const advice = finalData["advice"];
+
     return (
         <div style={{
             height: '100vh',
-            overflowY: 'auto', // 수직 스크롤바만 표시되도록 설정
-            scrollbarWidth: 'none', // Firefox에서 스크롤바를 숨기기 위한 설정
-            '-ms-overflow-style': 'none', // IE에서 스크롤바를 숨기기 위한 설정
-            '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
+            overflowY: 'auto',
+            scrollbarWidth: 'none',
+            '-ms-overflow-style': 'none',
+            '&::-webkit-scrollbar': {
                 display: 'none'
-            }// 스크롤을 허용하는 부분
+            }
         }}>
-            <div style={{width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
-                {user_name} 님의
-                iGeport 감정 분석 솔루션은
-            </div>
             <div style={{
                 width: "100%",
                 height: "10%",
-                fontSize: "1em",
-                marginBottom: "5%",
-                color: "#C6C6C6",
+                fontSize: "1.5em",
+                marginBottom: "20px",
                 paddingLeft: "10%",
                 paddingRight: "10%",
-                marginTop:"5%"
+                fontWeight: 'bold'  // Make the header bold
+            }}>
+                {user_name} 님의 iGeport 감정 분석 솔루션은
+            </div>
+            <div style={{width: "90%", margin:"5%", height: "auto",fontWeight: 'bold', fontSize: "1.2em"}}>
+                Summary
+            </div>
+            <div style={{
+                width: "90%",
+                height: "auto", // Adjust height as needed
+                fontSize: "0.8em",
+                marginBottom: "5%",
+                color: "#C6C6C6",
+                margin:"5%",
+              //  backgroundColor: "#f0f0f0", // Use a light background color for sections
+                borderRadius: '8px' // Optional: rounded corners
             }}>
                 {summary}
-                <br/>
+            </div>
+            <div style={{width: "90%", margin:"5%",  height: "auto", fontWeight: 'bold', fontSize: "1.2em"}}>
+                Advice
+            </div>
+            <div style={{
+                width: "90%",
+                height: "auto", // Adjust height as needed
+                fontSize: "0.8em",
+                marginBottom: "5%",
+                color: "#C6C6C6",
+                margin:"5%",
+             //   backgroundColor: "#e9e9e9", // A different background color for contrast
+                borderRadius: '8px' // Optional: rounded corners
+            }}>
                 {advice}
             </div>
         </div>
-    )
+    );
 }
+
+
 export function LoadingScreen() {
     return (
-        <div style={{ backgroundColor: "#181818", height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+        <div style={{backgroundColor: "#181818", height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <div style={{ marginTop: '30px' }}>
                 <Image src={"/image/logo3.svg"} width={120} height={120} alt="Logo" />
             </div>
