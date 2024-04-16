@@ -4,6 +4,7 @@ import {useEffect, useRef,useState} from "react";
 import {Fira_Sans} from "next/dist/compiled/@next/font/dist/google";
 import Image from "next/image";
 import Chart from 'chart.js/auto';
+import { parse } from 'mathjs';
 
 export default function Geport_view(){
     const router = useRouter();
@@ -206,6 +207,7 @@ export function Information({data}) {
 
 export function First({data}){
 
+    const JSON_data = JSON.parse(data['answer_1'])
     return (
         <div style={{
             height: '100vh',
@@ -230,7 +232,7 @@ export function First({data}){
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                {data.result["저는 이런 사람이 되고싶어요"]}
+                {JSON_data['answer']}
             </div>
         </div>
     )
@@ -238,6 +240,7 @@ export function First({data}){
 
 export function Second({data}) {
 
+    const JSON_data = JSON.parse(data['answer_2'])
     return (
         <div style={{
             height: '100vh',
@@ -263,7 +266,7 @@ export function Second({data}) {
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                {data.result["저의 좌우명은 다음과 같습니다 "]}
+                {JSON_data['answer']}
             </div>
         </div>
     )
@@ -271,6 +274,7 @@ export function Second({data}) {
 
 export function Third({data}) {
 
+    const JSON_data = JSON.parse(data['answer_3'])
     return (
         <div style={{
             height: '100vh',
@@ -296,7 +300,7 @@ export function Third({data}) {
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                {data.result["제 인생의 변곡점은 다음과 같아요"]}
+                {JSON_data['answer']}
             </div>
         </div>
     )
@@ -305,20 +309,29 @@ export function Third({data}) {
 export function Fourth({ data }) {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
+    const Json_data = JSON.parse(data['answer_4']);
+    const [functionData, setFunctionData] = useState(Json_data);  // functionData 초기화
 
     useEffect(() => {
-        if (chartRef.current && data) {  // 차트 생성 조건 확인
+        if (chartRef.current && data) {
             const ctx = chartRef.current.getContext('2d');
             if (chartInstance.current) {
-                chartInstance.current.destroy();  // 기존 차트 인스턴스 제거
+                chartInstance.current.destroy();
             }
+
+            console.log("변환 시작")
+            // 수식 파서를 사용해서 수식 파싱
+            const expression = parse(functionData.equation);
+            const yValue = x => expression.evaluate({ x });  // x에 대한 y값 계산 함수
+            console.log("변환 완료")
+
             chartInstance.current = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: Array.from({length: 21}, (_, i) => i - 10),
                     datasets: [{
-                        label: data.result["이것이 재 인생 함수입니다"]["equation"],
-                        data: Array.from({length: 21}, (_, i) => -(i - 10)),
+                        label: functionData.equation,
+                        data: Array.from({length: 21}, (_, i) => yValue(i - 10)),
                         borderColor: 'red',
                         borderWidth: 2,
                         fill: false
@@ -336,38 +349,39 @@ export function Fourth({ data }) {
             });
         }
 
-        // 컴포넌트 언마운트 시 차트 인스턴스 제거
         return () => {
             if (chartInstance.current) {
                 chartInstance.current.destroy();
             }
         };
-    }, [data]); // data가 변경될 때마다 차트 업데이트
+    }, [data]);
 
     return (
-        <div style={{ height: '100vh' }}>
+        <div style={{ height: '100vh', alignItems: "center", justifyContent: "center" }}>
             <div style={{
                 width: "100%", height: "10%", fontSize: "1.5em",
-                marginBottom: "10%", paddingLeft: "10%", paddingRight: "10%"
+                marginBottom: "5%", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 {localStorage.getItem('name')} 님의 삶을 그래프로 표현했어요
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <canvas ref={chartRef} width="50%" height="50%"></canvas>
+            <div style={{ display: 'flex', width: "100%", height: "50%" }}>
+                <canvas ref={chartRef}></canvas>
             </div>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1em", marginBottom: "5%", color: "#C6C6C6",
-                paddingLeft: "10%", paddingRight: "10%", marginTop: "5%"
+                width: "100%", height: "10%", fontSize: "1em", color: "#C6C6C6",
+                paddingLeft: "10%", paddingRight: "10%"
             }}>
-                {data.result["이것이 재 인생 함수입니다"]}
+                {functionData["explanation"]}
             </div>
         </div>
     );
 }
 
 
+
 export function Fifth({data}){
 
+    const JSON_data = JSON.parse(data['answer_5'])
     return (
         <div style={{
             height: '100vh',
@@ -393,7 +407,7 @@ export function Fifth({data}){
                 paddingRight: "10%",
                 marginTop:"5%"
             }}>
-                {data.result["Geport Solution"]}
+                {JSON_data['answer']}
             </div>
         </div>
     )
