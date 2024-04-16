@@ -204,14 +204,14 @@ export function Information() {
         <div style={{
             height: '100vh'
         }}>
-            <div style={{width: "100%", height: "15%", fontSize: "1.6em",
+            <div style={{width: "100%", height: "15%", fontSize: "1.4em",
                 marginBottom: "10%" , paddingLeft: "10%", paddingRight: "10%"}}>
                 {bio}, {user_name} 님의 iGeport
             </div>
             <div style={{
                 width: "100%",
                 height: "10%",
-                fontSize: "1em",
+                fontSize: "1.2em",
                 color: "#C6C6C6",
                 marginBottom: "2%",
                 paddingLeft: "10%",
@@ -224,7 +224,7 @@ export function Information() {
     )
 }
 
-export function First({ data}){
+export function First({data}){
     // data 객체에서 바로 필요한 부분에 접근
     if (!data) {
         return <div>Loading or data not available...</div>; // 데이터 확인 로직 추가
@@ -250,7 +250,7 @@ export function First({ data}){
             }
         }}>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.5em",
+                width: "100%", height: "10%", fontSize: "1.4em",
                 marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 {user_name} 님의 블로그를 분석했어요
@@ -372,7 +372,7 @@ export function Second({data}) {
             blogData["blog_4"]["emotions"][key]
         ],
         borderColor: getRandomColor(),
-        fill: true, tension: 0.1
+        tension: 0.1
     }));
 
     const chartData = {
@@ -406,12 +406,6 @@ export function Second({data}) {
         }
     };
 
-    /*
-    *
-                width: "100%", height: "1.2em", fontSize: "1.2em",
-                marginBottom: "20px", paddingLeft: "10%", paddingRight: "10%"
-    * */
-
     return (
         <div style={{
             height: '100vh',
@@ -422,21 +416,21 @@ export function Second({data}) {
                 display: 'none'
             }}}>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.5em",
+                width: "100%", height: "10%", fontSize: "1.4em",
                 marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"}}>
                 이 기간 동안 {user_name} 님의 감정 변화를 보여드려요
             </div>
-            <Line data={chartData} options={options} style={{width: "100%", height: "40%"}} />
+            <Line data={chartData} options={options} style={{width: "80%", height: "40%"}} />
             <div style={{
                 width: "100%", height: "10%", fontSize: "0.9em",
-                marginBottom: "3%", paddingLeft: "10%", paddingRight: "10%", color:"#C6C6C6"}}>
-                <div style={{fontSize: "1.1rem"}}>1일차</div>
+                marginBottom:"3.5%", paddingLeft: "10%", paddingRight: "10%", color:"#C6C6C6"}}>
+                <div style={{fontSize: "1.2rem",fontWeight:"600",color: 'white' }}>1일차</div>
                 {blogData["blog_1"]["contents"]}
-                <div style={{fontSize: "1.1rem"}}>2일차</div>
+                <div style={{fontSize: "1.2rem",fontWeight:"600",color: 'white',marginTop:"3%" }}>2일차</div>
                 {blogData["blog_2"]["contents"]}
-                <div style={{fontSize: "1.1rem"}}>3일차</div>
+                <div style={{fontSize: "1.2rem",fontWeight:"600",color: 'white',marginTop:"3%" }}>3일차</div>
                 {blogData["blog_3"]["contents"]}
-                <div style={{fontSize: "1.1rem"}}>4일차</div>
+                <div style={{fontSize: "1.2rem",fontWeight:"600",color: 'white',marginTop:"3%" }}>4일차</div>
                 {blogData["blog_4"]["contents"]}
             </div>
         </div>
@@ -493,20 +487,20 @@ export function Third({data}) {
                 '&::-webkit-scrollbar': { // Webkit 엔진 기반 브라우저에서 스크롤바를 숨기기 위한 설정
                     display: 'none'}}}>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.2em",
+                width: "100%", height: "10%", fontSize: "1.4em",
                 marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"}}>
-                이 기간 동안 {user_name} 님의 감정 변화를 보여드려요
+                이 기간 동안 {user_name} 님의 감정 SOS를 알려드려요
             </div>
             <Bar data={emotionData} options={chartOptions} style={{width:"85%"}} />
             <div style={{
-                width: "100%", height: "10%", fontSize: "0.8em",
+                width: "100%", height: "10%", fontSize: "1em", marginTop:"5%",
                 marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%", color: "#C6C6C6"}}>
                 {answer3Data["contents"]}
             </div>
         </div>
     );
 }
-function Fourth({data}) {
+export function Fourth({data}) {
     const user_name = localStorage.getItem("name") || "Default User";
     const containerRef = useRef(null);
     const [size, setSize] = useState({ width: 0, height: 0 });
@@ -515,7 +509,7 @@ function Fourth({data}) {
     try {
         happinessData = JSON.parse(data["answer_4"]);
     } catch (e) {
-        console.error("Error parsing data:", e);
+        console.error("Parsing error:", e);
         return <div>Error loading data.</div>;
     }
 
@@ -523,12 +517,11 @@ function Fourth({data}) {
         text: key,
         value: value
     }));
-    console.log(words)
 
-    // Simplified font scale to ensure visibility
+    // Adjust the font scaling to emphasize larger values more
     const fontScale = scaleSqrt({
         domain: [1, Math.max(...words.map(word => word.value))],
-        range: [20, 60]  // Ensuring all words are within a reasonable font size range
+        range: [16, 80]
     });
 
     const fontSizeSetter = word => fontScale(word.value);
@@ -537,7 +530,7 @@ function Fourth({data}) {
         const updateSize = () => {
             if (containerRef.current) {
                 const { width, height } = containerRef.current.getBoundingClientRect();
-                setSize({ width: width * 0.85, height: height * 0.5 });
+                setSize({ width: width * 0.85, height: height * 0.5 }); // Sizing relative to parent
             }
         };
 
@@ -547,9 +540,9 @@ function Fourth({data}) {
     }, []);
 
     return (
-        <div ref={containerRef} style={{ height: '100vh', overflowY: 'auto' }}>
-            <div style={{ width: "85%", fontSize: "1.5em", marginBottom: "20px" }}>
-                이 기간 동안 {user_name} 님을 행복하게 한 것들을 모아봤어요.
+        <div ref={containerRef} style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ width: "100%", textAlign: "center", fontSize: "1.4em", marginBottom: "20px" }}>
+                {user_name} 님을 행복하게 만든 것들을 모아봤어요.
             </div>
             {size.width && size.height && (
                 <Wordcloud
@@ -557,11 +550,11 @@ function Fourth({data}) {
                     width={size.width}
                     height={size.height}
                     fontSize={fontSizeSetter}
-                    font="Impact"
-                    padding={10}  // Consistent padding
-                    rotate={() => 10 || -10 || 30||-20}  // No rotation for simplicity
+                    font="Arial"
+                    padding={5}
+                    rotate={() => 0}
                     spiral="archimedean"
-                    random={() => 0.5}  // Consistent randomness
+                    random={() => 0.5}
                 >
                     {cloudWords => cloudWords.map((word, i) => (
                         <Text
@@ -570,7 +563,7 @@ function Fourth({data}) {
                             textAnchor="middle"
                             transform={`translate(${word.x}, ${word.y}) rotate(${word.rotate})`}
                             fontSize={word.size}
-                            fontFamily="Impact"
+                            fontFamily="Arial"
                         >
                             {word.text}
                         </Text>
@@ -580,6 +573,7 @@ function Fourth({data}) {
         </div>
     );
 }
+
 
 export function Fifth({data}) {
     const user_name = localStorage.getItem("name") || "Default User";
@@ -604,7 +598,6 @@ export function Fifth({data}) {
         datasets: [{
             label: `${user_name} 님의 Big 5`,
             data: scores,
-            fill: true,
             borderColor: getRandomColor(),
             tension: 0.1
         }]
@@ -648,19 +641,19 @@ export function Fifth({data}) {
             }
         }}>
             <div style={{
-                width: "100%", height: "10%", fontSize: "1.5em",
+                width: "100%", height: "10%", fontSize: "1.4em",
                 marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 이 기간 동안 {user_name} 님의 성격 특성을 분석합니다
             </div>
-            <Line data={chartData} options={options} style={{width:"95%", height:"40%"}}/>
+            <Line data={chartData} options={options} style={{width:"80%", height:"40%"}}/>
             <div style={{
-                width: "100%", height: "10%", fontSize: "0.8em",
+                width: "100%", height: "10%", fontSize: "0.9em", color:"#C6C6C6",
                 marginBottom: "12px", paddingLeft: "10%", paddingRight: "10%"
             }}>
                 {traits.map((trait, index) => (
                     <div key={index} style={{ marginBottom: "20px" }}>
-                        <div style={{ fontWeight: 'bold', fontSize: "1.1rem" }}>{trait.label} ({trait.key})</div>
+                        <div style={{ fontSize: "1.2rem", fontWeight:"600",color: 'white'  }}>{trait.key}</div>
                         {personalityData[trait.key].description}
                     </div>
                 ))}
@@ -690,21 +683,20 @@ export function Six({data}) {
             <div style={{
                 width: "100%",
                 height: "10%",
-                fontSize: "1.5em",
+                fontSize: "1.4em",
                 marginBottom: "20px",
                 paddingLeft: "10%",
-                paddingRight: "10%",
-                fontWeight: 'bold'  // Make the header bold
+                paddingRight: "10%"
             }}>
                 {user_name} 님의 iGeport 감정 분석 솔루션은
             </div>
-            <div style={{width: "90%", margin:"5%", height: "auto",fontWeight: 'bold', fontSize: "1.2em"}}>
+            <div style={{width: "90%", margin:"5%", height: "auto", fontWeight:"600",color: 'white' ,fontSize: "1.2em"}}>
                 Summary
             </div>
             <div style={{
-                width: "90%",
+                width: "85%",
                 height: "auto", // Adjust height as needed
-                fontSize: "0.8em",
+                fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 margin:"5%",
@@ -713,13 +705,13 @@ export function Six({data}) {
             }}>
                 {summary}
             </div>
-            <div style={{width: "90%", margin:"5%",  height: "auto", fontWeight: 'bold', fontSize: "1.2em"}}>
+            <div style={{width: "90%", margin:"5%", fontWeight:"600",color: 'white' , height: "auto",fontSize: "1.2em"}}>
                 Advice
             </div>
             <div style={{
-                width: "90%",
+                width: "85%",
                 height: "auto", // Adjust height as needed
-                fontSize: "0.8em",
+                fontSize: "0.9em",
                 marginBottom: "5%",
                 color: "#C6C6C6",
                 margin:"5%",
