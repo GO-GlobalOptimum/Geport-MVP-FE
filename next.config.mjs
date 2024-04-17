@@ -2,6 +2,9 @@
 const nextConfig = {
     reactStrictMode: false,
     swcMinify: true,
+    experimental: {
+        proxyTimeout: 1000 * 120,
+    },
     async rewrites() {
         return [
             {

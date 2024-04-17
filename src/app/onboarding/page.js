@@ -42,14 +42,14 @@ export default function Onboarding(){
         return (
             <div style={{
                 width: "90%",
-                height: "50px",
+                height: "30px",
                 margin: "5%",
                 marginBottom: "6%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center"
             }}>
-                <div style={{width: "48%", height: "40px", padding: "5%", color: "#1AE57C",
+                <div style={{width: "48%", height: "20px", padding: "5%", color: "#1AE57C",
                     borderRadius: "10px", marginRight : "4%", borderColor: "#1AE57C",
                     borderStyle: "solid", borderWidth: "2px",
                     display: "flex", alignItems: "center", justifyContent: "center"}}
@@ -59,7 +59,7 @@ export default function Onboarding(){
                     }}>
                     iGeport 만들기
                 </div>
-                <div style={{width: "48%", height: "40px", padding: "5%", color: "#1AE57C",
+                <div style={{width: "48%", height: "20px", padding: "5%", color: "#1AE57C",
                     borderRadius: "10px", borderColor: "#1AE57C",
                     borderStyle: "solid", borderWidth: "2px",
                     display: "flex", alignItems: "center", justifyContent: "center"}}
@@ -119,8 +119,10 @@ export default function Onboarding(){
                 lastPage ? <LastButton/> : <NormalButton/>
             }
 
-            {firstPage ? <div style={{marginBottom: "13%"}}/> :
-                <div style={{display: 'flex', justifyContent: 'center', marginBottom: "7%"}}>
+            {firstPage ? <div style={{display: 'flex', justifyContent: 'center', marginBottom: "3%"}}>
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: "3%"}}></div>
+            </div> :
+                <div style={{display: 'flex', justifyContent: 'center', marginBottom: "3%"}}>
                     <div onClick={() => {
                         router.refresh()
                         router.push('/')
