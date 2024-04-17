@@ -133,7 +133,7 @@ export default function IGeport() {
                          const contentString = JSON.stringify(content);
                          localStorage.setItem('igeport-answer', contentString);
                          router.refresh();
-                         router.push('/user-info/0'); // 다음 페이지로 이동하자
+                         router.push('/userinfo/0'); // 다음 페이지로 이동하자
                      } else {
                          setPaging(prev => prev + 1)
                      }
