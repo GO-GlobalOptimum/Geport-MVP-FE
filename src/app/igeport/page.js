@@ -111,8 +111,8 @@ export default function IGeport() {
                 </div>
             }
             <div style={{
-                width: "90%",
-                height: "50px",
+                width: "90%", // 너비를 90%로 설정
+                height: "68.5px", // 높이를 50px로 설정
                 backgroundColor: isVaild ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
                 margin: "5%",
@@ -140,6 +140,7 @@ export default function IGeport() {
                  }}>
                 다음으로
             </div>
+
         </div>
     );
 }

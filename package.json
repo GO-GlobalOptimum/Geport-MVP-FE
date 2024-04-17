@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@visx/scale": "^3.5.0",
+    "@visx/text": "^3.3.0",
+    "@visx/wordcloud": "^3.3.0",
     "chart.js": "^4.4.2",
     "d3": "^7.9.0",
     "d3-cloud": "^1.2.7",
