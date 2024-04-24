@@ -150,7 +150,7 @@ export default function Geport_view(){
                     }
                     <div style={{
                         width: "90%",
-                        height: "50px",
+                        height: "68.5px",
                         backgroundColor: "#1AE57C",
                         borderRadius: "10px",
                         margin: "5%",

@@ -162,7 +162,7 @@ export default function Userinfo(props){
 
             <div style={{
                 width: "90%",
-                height: "50px",
+                height: "68.5px",
                 backgroundColor: isVaild ? "#1AE57C" : "#363636",
                 borderRadius: "10px",
                 margin: "5%",
