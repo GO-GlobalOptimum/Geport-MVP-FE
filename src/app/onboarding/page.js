@@ -10,6 +10,19 @@ export default function Onboarding(){
     const [firstPage, setFirstPage] = useState(false);
 
     useEffect(() => {
+        localStorage.removeItem("igeport-answer")
+        localStorage.removeItem("igeport-link")
+        localStorage.removeItem("geport-answer")
+        localStorage.removeItem("geport-link")
+        localStorage.removeItem('name')
+        localStorage.removeItem('bio')
+        localStorage.removeItem('mbti')
+        localStorage.removeItem('age')
+        localStorage.removeItem('gender')
+        localStorage.removeItem('phone')
+    }, []);
+
+    useEffect(() => {
         const isLastPage = paging === 3
         setLastPage(isLastPage);
         const isFirstPage = paging === 1

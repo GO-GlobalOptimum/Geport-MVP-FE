@@ -11,7 +11,7 @@ import { scaleSqrt } from '@visx/scale'; // Make sure this import is included
 
 
 
-export default function iGeport_view(){
+export default function Igeport_view(){
     const router = useRouter();
     const [loading, setLoading] = useState(true);//3초 로딩 해보자
     const [paging, setPaging] = useState(0);
@@ -73,6 +73,7 @@ export default function iGeport_view(){
 
 
     }, []); // This effect runs only once when the component mounts
+
     useEffect(() => {
         const isPage = paging >= 1 && paging <= 6;
         setIsInfo(!isPage);
