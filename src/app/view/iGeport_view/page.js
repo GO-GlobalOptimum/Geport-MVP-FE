@@ -539,18 +539,16 @@ export function Fourth({data}) {
 
     const fontSizeSetter = word => fontScale(word.value);
 
-    useEffect(() => {
-        const updateSize = () => {
-            if (containerRef.current) {
-                const { width, height } = containerRef.current.getBoundingClientRect();
-                setSize({ width: width * 0.85, height: height * 0.5 }); // Sizing relative to parent
-            }
-        };
+    const updateSize = () => {
+        if (containerRef.current) {
+            const { width, height } = containerRef.current.getBoundingClientRect();
+            setSize({ width: width * 0.85, height: height * 0.5 }); // Sizing relative to parent
+        }
+    };
 
-        window.addEventListener('resize', updateSize);
-        updateSize();
-        return () => window.removeEventListener('resize', updateSize);
-    }, []);
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    window.removeEventListener('resize', updateSize);
 
     return (
         <div ref={containerRef} style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>

@@ -27,7 +27,7 @@ const Question = (props) => {
         </div>
     )
 };
-export default function iGeportLink() {
+export default function IgeportLink() {
     const router = useRouter();
     const [questionList, setQuestionList] = useState([
         {id: 1, content: ""}, {id: 2, content: ""}, {id: 3, content: ""}, {id: 4, content: ""}
